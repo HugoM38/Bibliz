@@ -2,6 +2,10 @@ import 'package:bibliz/database/database.dart';
 import 'package:bibliz/ui/account/signup.dart';
 import 'package:flutter/material.dart';
 
+import '../../database/books/book.dart';
+import '../../database/books/books_query.dart';
+// Assurez-vous d'importer votre classe Book et BookQuery ici
+
 class SigninPage extends StatefulWidget {
   const SigninPage({super.key});
 
@@ -12,6 +16,8 @@ class SigninPage extends StatefulWidget {
 class _SigninPageState extends State<SigninPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  // final BookQuery bookQuery = BookQuery();
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +47,6 @@ class _SigninPageState extends State<SigninPage> {
                 String email = _emailController.text;
                 String password = _passwordController.text;
                 print('Email: $email\nPassword: $password');
-                // Ajoutez la logique de vérification du login ici
               },
               child: const Text('Connexion'),
             ),
@@ -54,6 +59,27 @@ class _SigninPageState extends State<SigninPage> {
               },
               child: const Text("S'inscrire"),
             ),
+            const SizedBox(height: 16.0),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     // Création d'un livre en dur pour tester
+            //     Book book = Book(
+            //         title: "Exemple de Titre",
+            //         author: "Exemple d'Auteur",
+            //         isbn: "1234567890",
+            //         publisher: "Exemple d'Éditeur",
+            //         publicationYear: 2023,
+            //         genre: "Fiction",
+            //         summary: "Ceci est un résumé d'exemple.",
+            //         language: "Français",
+            //         status: "Disponible",
+            //         condition: "Neuf",
+            //         location: "Rayon 1");
+
+            //     bookQuery.addBook(book);
+            //   },
+            //   child: const Text("Créer un Livre de Test"),
+            // ),
           ],
         ),
       ),
