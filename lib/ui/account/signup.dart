@@ -40,12 +40,22 @@ class _SignUpPageState extends State<SignUpPage> {
               onPressed: () {
                 String email = _emailController.text;
                 String password = _passwordController.text;
-                UserQuery().signup(email, password).then((value) => {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SigninPage()))
-                    });
+                UserQuery()
+                    .signup(email, password)
+                    .then((value) => {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const SigninPage()))
+                        })
+                    .catchError((error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(error.toString()),
+                      duration: const Duration(seconds: 3),
+                    ),
+                  );
+                });
               },
               child: const Text('Inscription'),
             ),
