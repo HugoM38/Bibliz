@@ -1,10 +1,6 @@
-import 'package:bibliz/database/database.dart';
 import 'package:bibliz/ui/account/signup.dart';
 import 'package:flutter/material.dart';
 
-import '../../database/books/book.dart';
-import '../../database/books/books_query.dart';
-// Assurez-vous d'importer votre classe Book et BookQuery ici
 
 class SigninPage extends StatefulWidget {
   const SigninPage({super.key});

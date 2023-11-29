@@ -1,5 +1,6 @@
 import 'package:bibliz/database/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 import 'book.dart';
 
@@ -9,11 +10,13 @@ class BookQuery {
 
   Future<void> addBook(Book book) async {
     QuerySnapshot query =
-        await booksCollection.where('isbn', isEqualTo: book.isbn).get();
+        await booksCollection.where('isbn', isEqualTo: book.isbn).get().catchError((error) {
+      throw error;
+    });
     if (query.docs.isEmpty) {
       booksCollection.add(book.toMap());
     } else {
-      print("Book already exists");
+       throw ErrorDescription("Ce livre existe déjà");
     }
   }
 }

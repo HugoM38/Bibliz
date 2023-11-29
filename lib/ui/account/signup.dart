@@ -1,4 +1,4 @@
-import 'package:bibliz/database/database.dart';
+import 'package:bibliz/database/users/user.dart';
 import 'package:bibliz/database/users/users_query.dart';
 import 'package:bibliz/ui/account/signin.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
@@ -26,7 +26,7 @@ class _SignUpPageState extends State<SignUpPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: _emailController,
+              controller: _usernameController,
               decoration: const InputDecoration(labelText: 'Email'),
             ),
             const SizedBox(height: 16.0),
@@ -38,10 +38,10 @@ class _SignUpPageState extends State<SignUpPage> {
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
-                String email = _emailController.text;
+                String username = _usernameController.text;
                 String password = _passwordController.text;
                 UserQuery()
-                    .signup(email, password)
+                    .signup(User(username: username, password: password, role: ["user"]))
                     .then((value) => {
                           Navigator.push(
                               context,
