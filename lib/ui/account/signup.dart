@@ -1,3 +1,6 @@
+import 'package:bibliz/database/database.dart';
+import 'package:bibliz/database/users/users_query.dart';
+import 'package:bibliz/ui/account/signin.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -35,11 +38,14 @@ class _SignUpPageState extends State<SignUpPage> {
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
-                // Ajoutez ici la logique de vérification du login
                 String email = _emailController.text;
                 String password = _passwordController.text;
-                print('Email: $email\nPassword: $password');
-                // Ajoutez la logique de vérification du login ici
+                UserQuery().signup(email, password).then((value) => {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SigninPage()))
+                    });
               },
               child: const Text('Inscription'),
             ),

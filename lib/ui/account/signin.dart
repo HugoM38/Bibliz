@@ -1,3 +1,4 @@
+import 'package:bibliz/database/database.dart';
 import 'package:bibliz/ui/account/signup.dart';
 import 'package:flutter/material.dart';
 
