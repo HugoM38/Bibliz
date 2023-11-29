@@ -81,7 +81,7 @@ class _SigninPageState extends State<SigninPage> {
             ElevatedButton(
               onPressed: () async {
                 String titleToSearch =
-                    "Exemple de Titres"; // Remplacez par le titre à rechercher
+                    "Exemple de Titre"; // Remplacez par le titre à rechercher
                 Book? book = await bookQuery.getBookByTitle(titleToSearch);
 
                 if (book != null) {

@@ -41,7 +41,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 String username = _usernameController.text;
                 String password = _passwordController.text;
                 UserQuery()
-                    .signup(User(username: username, password: password, role: ["user"]))
+                    .signup(User(username: username, password: password, roles: ["user"]))
                     .then((value) => {
                           Navigator.push(
                               context,
