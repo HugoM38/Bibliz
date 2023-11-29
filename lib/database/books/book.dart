@@ -25,6 +25,22 @@ class Book {
     required this.location,
   });
 
+  factory Book.fromMap(Map<String, dynamic> map) {
+    return Book(
+      title: map['title'] ?? '',
+      author: map['author'] ?? '',
+      isbn: map['isbn'] ?? '',
+      publisher: map['publisher'] ?? '',
+      publicationYear: map['publicationYear'] ?? 0,
+      genre: map['genre'] ?? '',
+      summary: map['summary'] ?? '',
+      language: map['language'] ?? '',
+      status: map['status'] ?? '',
+      condition: map['condition'] ?? '',
+      location: map['location'] ?? '',
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'title': title,

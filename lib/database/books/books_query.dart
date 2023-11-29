@@ -19,4 +19,19 @@ class BookQuery {
        throw ErrorDescription("Ce livre existe déjà");
     }
   }
+
+  Future<Book?> getBookByTitle(String title) async {
+    QuerySnapshot query =
+        await booksCollection.where('title', isEqualTo: title).get();
+    if (query.docs.isNotEmpty) {
+      var docData = query.docs.first.data();
+      // Assurez-vous que docData est une Map<String, dynamic>
+      if (docData is Map<String, dynamic>) {
+        return Book.fromMap(docData);
+      }
+    } else {
+      print("Aucun livre trouvé avec ce titre");
+    }
+    return null;
+  }
 }
