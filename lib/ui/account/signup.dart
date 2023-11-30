@@ -59,10 +59,21 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: ElevatedButton(
                   onPressed: () {
                     String username = _usernameController.text;
+                    if (!validatePassword(_passwordController.text)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              "Il faut un mot de passe avec 8 caractères minimum, un chiffre et une majuscule"),
+                          duration: Duration(seconds: 3),
+                        ),
+                      );
+                      return;
+                    }
+
                     String password = sha256
                         .convert(utf8.encode(_passwordController.text))
                         .toString();
-                          
+
                     UserQuery()
                         .signup(User(
                             username: username,
@@ -93,5 +104,12 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       ),
     );
+  }
+
+  bool validatePassword(String password) {
+    // La regex pour un mot de passe avec au moins 8 caractères, une majuscule et un chiffre
+    final RegExp regex = RegExp(r'^(?=.*[A-Z])(?=.*\d).{8,}$');
+
+    return regex.hasMatch(password);
   }
 }
