@@ -17,6 +17,13 @@ class _CreateBookPageState extends State<CreateBookPage> {
   final ImagePicker _picker = ImagePicker();
   XFile? _imageFile;
   Book? newBook;
+  List<String> statusOptions = [
+    'Disponible',
+    'Emprunté',
+    'En réparation',
+    'Perdu'
+  ];
+  List<String> conditionOptions = ['Neuf', 'Bon', 'Usé', 'Endommagé'];
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _authorController = TextEditingController();
@@ -104,24 +111,36 @@ class _CreateBookPageState extends State<CreateBookPage> {
             padding: const EdgeInsets.all(12.0),
             child: Column(
               children: <Widget>[
-                buildTextFormField(_titleController, 'Titre', Icons.book),
-                buildTextFormField(_authorController, 'Auteur', Icons.person),
-                buildTextFormField(_isbnController, 'ISBN', Icons.code),
                 buildTextFormField(
-                    _publisherController, 'Éditeur', Icons.business),
-                buildTextFormField(_yearController, 'Année de publication',
-                    Icons.calendar_today,
-                    isNumber: true),
-                buildTextFormField(_genreController, 'Genre', Icons.category),
-                buildTextFormField(_summaryController, 'Résumé', Icons.subject,
+                    context, _titleController, 'Titre', Icons.book),
+                buildTextFormField(
+                    context, _authorController, 'Auteur', Icons.person),
+                buildTextFormField(
+                    context, _isbnController, 'ISBN', Icons.code),
+                buildTextFormField(
+                    context, _publisherController, 'Éditeur', Icons.business),
+                buildTextFormField(context, _yearController,
+                    'Année de publication', Icons.calendar_today,
+                    fieldType: FieldType
+                        .date // Utilisez le type de champ date pour la date de publication
+                    ),
+                buildTextFormField(
+                    context, _genreController, 'Genre', Icons.category),
+                buildTextFormField(
+                    context, _summaryController, 'Résumé', Icons.subject,
                     maxLines: 3),
                 buildTextFormField(
-                    _languageController, 'Langue', Icons.language),
-                buildTextFormField(_statusController, 'Statut', Icons.info),
+                    context, _languageController, 'Langue', Icons.language),
                 buildTextFormField(
-                    _conditionController, 'Condition', Icons.build_circle),
+                    context, _statusController, 'Statut', Icons.info,
+                    fieldType: FieldType.dropdown,
+                    dropdownItems: statusOptions),
+                buildTextFormField(context, _conditionController, 'Condition',
+                    Icons.build_circle,
+                    fieldType: FieldType.dropdown,
+                    dropdownItems: conditionOptions),
                 buildTextFormField(
-                    _locationController, 'Localisation', Icons.place),
+                    context, _locationController, 'Localisation', Icons.place),
                 // Zone de téléchargement d'image
                 GestureDetector(
                   onTap: () {}, // Logique pour choisir une image
