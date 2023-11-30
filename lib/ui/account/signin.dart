@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:bibliz/database/users/users_query.dart';
 import 'package:bibliz/ui/account/signup.dart';
 import 'package:bibliz/ui/home.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 
 import '../../database/books/book.dart';
@@ -45,7 +48,9 @@ class _SigninPageState extends State<SigninPage> {
               onPressed: () {
                 // Ajoutez ici la logique de vérification du login
                 String username = _usernameController.text;
-                String password = _passwordController.text;
+                String password = sha256
+                    .convert(utf8.encode(_passwordController.text))
+                    .toString();
                 UserQuery()
                     .signin(username, password)
                     .then((value) => {

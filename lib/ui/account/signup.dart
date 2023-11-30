@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:bibliz/database/users/user.dart';
 import 'package:bibliz/database/users/users_query.dart';
 import 'package:bibliz/ui/home.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -39,9 +42,15 @@ class _SignUpPageState extends State<SignUpPage> {
             ElevatedButton(
               onPressed: () {
                 String username = _usernameController.text;
-                String password = _passwordController.text;
+                String password = sha256
+                    .convert(utf8.encode(_passwordController.text))
+                    .toString();
+
                 UserQuery()
-                    .signup(User(username: username, password: password, roles: ["user"]))
+                    .signup(User(
+                        username: username,
+                        password: password,
+                        roles: ["user"]))
                     .then((value) => {
                           Navigator.push(
                               context,
