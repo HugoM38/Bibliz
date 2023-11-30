@@ -1,10 +1,6 @@
-import 'dart:convert';
-import 'dart:html';
-
 import 'package:bibliz/database/database.dart';
 import 'package:bibliz/database/users/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 
 class UserQuery {

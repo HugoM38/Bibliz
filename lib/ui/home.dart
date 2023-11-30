@@ -1,4 +1,6 @@
 import 'package:bibliz/ui/create_book_page.dart';
+import 'package:bibliz/ui/account/signin.dart';
+import 'package:bibliz/utils/sharedprefs.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,6 +16,20 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Bibliz'),
+        actions: [
+          ElevatedButton(
+              onPressed: () async {
+                await SharedPrefs().removeCurrentUser();
+
+                if (context.mounted) {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SigninPage()));
+                }
+              },
+              child: const Text("Se déconnecter"))
+        ],
       ),
       body: const Center(
         child: Text('Bienvenue sur Bibliz!'),

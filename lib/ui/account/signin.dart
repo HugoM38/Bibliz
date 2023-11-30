@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:bibliz/database/users/users_query.dart';
 import 'package:bibliz/ui/account/signup.dart';
 import 'package:bibliz/ui/home.dart';
+import 'package:bibliz/utils/sharedprefs.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 
@@ -51,15 +52,15 @@ class _SigninPageState extends State<SigninPage> {
                 String password = sha256
                     .convert(utf8.encode(_passwordController.text))
                     .toString();
-                UserQuery()
-                    .signin(username, password)
-                    .then((value) => {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const HomePage()))
-                        })
-                    .catchError((error) {
+                UserQuery().signin(username, password).then((value) async {
+                  await SharedPrefs().setCurrentUser(username);
+                  if (context.mounted) {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage()));
+                  }
+                }).catchError((error) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(error.toString()),
@@ -72,7 +73,7 @@ class _SigninPageState extends State<SigninPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const SignUpPage()));
@@ -80,26 +81,6 @@ class _SigninPageState extends State<SigninPage> {
               child: const Text("S'inscrire"),
             ),
             const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                // Création d'un livre en dur pour tester
-                Book book = Book(
-                    title: "Exemple de Titre",
-                    author: "Exemple d'Auteur",
-                    isbn: "1234567890",
-                    publisher: "Exemple d'Éditeur",
-                    publicationYear: 2023,
-                    genre: "Fiction",
-                    summary: "Ceci est un résumé d'exemple.",
-                    language: "Français",
-                    status: "Disponible",
-                    condition: "Neuf",
-                    location: "Rayon 1");
-
-                bookQuery.addBook(book);
-              },
-              child: const Text("Créer un Livre de Test"),
-            ),
             ElevatedButton(
               onPressed: () async {
                 String titleToSearch =

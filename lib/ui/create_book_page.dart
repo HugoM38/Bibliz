@@ -60,8 +60,6 @@ class _CreateBookPageState extends State<CreateBookPage> {
   }
 
   void _createBook() {
-    print("Créer le livre cliqué"); // Ajoutez cette ligne pour tester
-    // Création de l'objet Book avec les valeurs des contrôleurs
     Book newBook = Book(
       title: _titleController.text,
       author: _authorController.text,
@@ -78,13 +76,12 @@ class _CreateBookPageState extends State<CreateBookPage> {
     // Utilisez BookQuery pour enregistrer le livre
     BookQuery().addBook(newBook).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Livre ajouté avec succès!'),
           backgroundColor: Colors.green,
         ),
       );
     }).catchError((error) {
-      print('Erreur lors de l\'ajout du livre: $error'); // Ajoutez cette ligne
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Erreur lors de l\'ajout du livre: $error'),
