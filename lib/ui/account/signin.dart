@@ -1,5 +1,6 @@
 import 'package:bibliz/database/users/users_query.dart';
 import 'package:bibliz/ui/account/signup.dart';
+import 'package:bibliz/ui/home.dart';
 import 'package:flutter/material.dart';
 
 import '../../database/books/book.dart';
@@ -48,11 +49,10 @@ class _SigninPageState extends State<SigninPage> {
                 UserQuery()
                     .signin(username, password)
                     .then((value) => {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text("vous êtes connecté"),
-                            duration: Duration(seconds: 3),
-                          ))
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const HomePage()))
                         })
                     .catchError((error) {
                   ScaffoldMessenger.of(context).showSnackBar(

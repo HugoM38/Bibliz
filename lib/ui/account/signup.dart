@@ -1,6 +1,6 @@
 import 'package:bibliz/database/users/user.dart';
 import 'package:bibliz/database/users/users_query.dart';
-import 'package:bibliz/ui/account/signin.dart';
+import 'package:bibliz/ui/home.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -46,7 +46,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const SigninPage()))
+                                  builder: (context) => const HomePage()))
                         })
                     .catchError((error) {
                   ScaffoldMessenger.of(context).showSnackBar(
