@@ -1,7 +1,7 @@
 class User {
   final String username;
   final String password;
-  final List<String> roles;
+  final List<dynamic> roles;
   User({
     required this.username,
     required this.password,
@@ -10,9 +10,9 @@ class User {
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      username: map['username'] ?? '',
-      password: map['password'] ?? '',
-      roles: map['roles'] ?? [],
+      username: map['username'],
+      password: map['password'],
+      roles: map['roles'],
     );
   }
 
