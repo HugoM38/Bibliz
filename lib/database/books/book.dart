@@ -10,6 +10,7 @@ class Book {
   final String status;
   final String condition;
   final String location;
+  final String? imageUrl;
 
   Book({
     required this.title,
@@ -23,6 +24,7 @@ class Book {
     required this.status,
     required this.condition,
     required this.location,
+    this.imageUrl,
   });
 
   factory Book.fromMap(Map<String, dynamic> map) {
@@ -38,6 +40,7 @@ class Book {
       status: map['status'] ?? '',
       condition: map['condition'] ?? '',
       location: map['location'] ?? '',
+      imageUrl: map['imageUrl'] ?? '',
     );
   }
 
@@ -54,6 +57,7 @@ class Book {
       'status': status,
       'condition': condition,
       'location': location,
+      'imageUrl': imageUrl,
     };
   }
 }

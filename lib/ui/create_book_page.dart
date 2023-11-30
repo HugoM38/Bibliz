@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:bibliz/database/books/book.dart';
 import 'package:bibliz/database/books/books_query.dart';
 import 'package:bibliz/shared/build_text_form_field.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -15,7 +18,7 @@ class CreateBookPage extends StatefulWidget {
 class _CreateBookPageState extends State<CreateBookPage> {
   final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
-  XFile? _imageFile;
+  Uint8List? _imageBytes;
   Book? newBook;
   List<String> statusOptions = [
     'Disponible',
@@ -58,15 +61,40 @@ class _CreateBookPageState extends State<CreateBookPage> {
   Future<void> _pickImage() async {
     try {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-      setState(() {
-        _imageFile = pickedFile;
-      });
+      if (pickedFile != null) {
+        final bytes = await pickedFile.readAsBytes();
+        setState(() {
+          _imageBytes = bytes;
+        });
+      }
     } catch (e) {
       // Gérer l'erreur
+      print("Erreur lors de la sélection de l'image: $e");
     }
   }
 
-  void _createBook() {
+  Future<String?> uploadImage(Uint8List imageBytes, String fileName) async {
+    try {
+      // Créer une référence au chemin où l'image sera stockée
+      final ref = FirebaseStorage.instance.ref().child('images/$fileName');
+
+      // Télécharger l'image
+      final result = await ref.putData(imageBytes);
+
+      // Retourner l'URL de l'image téléchargée
+      return await result.ref.getDownloadURL();
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  void _createBook() async {
+    String? imageUrl;
+    if (_imageBytes != null) {
+      imageUrl = await uploadImage(_imageBytes!, 'nom_de_l_image');
+    }
+
     Book newBook = Book(
       title: _titleController.text,
       author: _authorController.text,
@@ -79,6 +107,7 @@ class _CreateBookPageState extends State<CreateBookPage> {
       status: _statusController.text,
       condition: _conditionController.text,
       location: _locationController.text,
+      imageUrl: imageUrl,
     );
     // Utilisez BookQuery pour enregistrer le livre
     BookQuery().addBook(newBook).then((_) {
@@ -147,16 +176,14 @@ class _CreateBookPageState extends State<CreateBookPage> {
                         'Condition', Icons.build_circle,
                         fieldType: FieldType.dropdown,
                         dropdownItems: conditionOptions),
-                    buildTextFormField(context, _locationController,
-                        'Localisation', Icons.place),
                     // Zone de téléchargement d'image
                     GestureDetector(
-                      onTap: () {}, // Logique pour choisir une image
+                      onTap: _pickImage,
                       child: Container(
                         height: 200,
                         color: Colors.grey[200],
-                        child: _imageFile != null
-                            ? Image.file(File(_imageFile!.path))
+                        child: _imageBytes != null
+                            ? Image.memory(_imageBytes!)
                             : const Icon(Icons.add_a_photo),
                       ),
                     ),
