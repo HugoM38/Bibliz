@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefs {
@@ -16,7 +17,7 @@ class SharedPrefs {
     prefs = await SharedPreferences.getInstance();
   }
 
-  Future<String?> getCurrentUser() async {
+  String? getCurrentUser() {
     return prefs.getString(_userKey);
   }
 

@@ -52,7 +52,12 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body:
-            widget.currentUser != null ? const HomePage() : const SigninPage());
+
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text("Bibliz"),
+        ),
+
+        body: widget.currentUser != null ? const HomePage() : const SigninPage());
   }
 }

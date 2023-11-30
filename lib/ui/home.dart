@@ -1,3 +1,4 @@
+import 'package:bibliz/ui/administrator/administrator.dart';
 import 'package:bibliz/ui/create_book_page.dart';
 import 'package:bibliz/ui/account/signin.dart';
 import 'package:bibliz/utils/sharedprefs.dart';
@@ -29,7 +30,15 @@ class _HomePageState extends State<HomePage> {
                           builder: (context) => const SigninPage()));
                 }
               },
-              child: const Text("Se déconnecter"))
+              child: const Text("Se déconnecter")),
+          ElevatedButton(onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Administrator()
+              )
+            );
+          }, child: const Text("Administration"))
         ],
       ),
       body: const Center(
