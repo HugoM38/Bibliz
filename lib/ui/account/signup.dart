@@ -27,12 +27,12 @@ class _SignUpPageState extends State<SignUpPage> {
           children: [
             TextField(
               controller: _usernameController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: "Nom d'utilisateur"),
             ),
             const SizedBox(height: 16.0),
             TextField(
               controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(labelText: 'Mot de passe'),
               obscureText: true,
             ),
             const SizedBox(height: 16.0),

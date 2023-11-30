@@ -1,3 +1,4 @@
+import 'package:bibliz/database/users/users_query.dart';
 import 'package:bibliz/ui/account/signup.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,7 @@ class SigninPage extends StatefulWidget {
 }
 
 class _SigninPageState extends State<SigninPage> {
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   final BookQuery bookQuery = BookQuery();
@@ -29,22 +30,38 @@ class _SigninPageState extends State<SigninPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              controller: _usernameController,
+              decoration: const InputDecoration(labelText: "Nom d'utilisateur"),
             ),
             const SizedBox(height: 16.0),
             TextField(
               controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(labelText: 'Mot de passe'),
               obscureText: true,
             ),
             const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
                 // Ajoutez ici la logique de vérification du login
-                String email = _emailController.text;
+                String username = _usernameController.text;
                 String password = _passwordController.text;
-                print('Email: $email\nPassword: $password');
+                UserQuery()
+                    .signin(username, password)
+                    .then((value) => {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text("vous êtes connecté"),
+                            duration: Duration(seconds: 3),
+                          ))
+                        })
+                    .catchError((error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(error.toString()),
+                      duration: const Duration(seconds: 3),
+                    ),
+                  );
+                });
               },
               child: const Text('Connexion'),
             ),

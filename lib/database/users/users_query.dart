@@ -31,7 +31,7 @@ class UserQuery {
           query.docs.first.data() as Map<String, dynamic>;
       return User.fromMap(user);
     } else {
-      throw ErrorDescription("Ce livre n'existe pas");
+      throw ErrorDescription("Nom d'utilisateur ou mot de passe incorrect");
     }
   }
 }
