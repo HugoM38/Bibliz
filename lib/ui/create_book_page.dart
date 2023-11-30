@@ -102,63 +102,73 @@ class _CreateBookPageState extends State<CreateBookPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Créer un nouveau livre'),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text("Bibliz"),
       ),
       body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              children: <Widget>[
-                buildTextFormField(
-                    context, _titleController, 'Titre', Icons.book),
-                buildTextFormField(
-                    context, _authorController, 'Auteur', Icons.person),
-                buildTextFormField(
-                    context, _isbnController, 'ISBN', Icons.code),
-                buildTextFormField(
-                    context, _publisherController, 'Éditeur', Icons.business),
-                buildTextFormField(context, _yearController,
-                    'Année de publication', Icons.calendar_today,
-                    fieldType: FieldType
-                        .date // Utilisez le type de champ date pour la date de publication
-                    ),
-                buildTextFormField(
-                    context, _genreController, 'Genre', Icons.category),
-                buildTextFormField(
-                    context, _summaryController, 'Résumé', Icons.subject,
-                    maxLines: 3),
-                buildTextFormField(
-                    context, _languageController, 'Langue', Icons.language),
-                buildTextFormField(
-                    context, _statusController, 'Statut', Icons.info,
-                    fieldType: FieldType.dropdown,
-                    dropdownItems: statusOptions),
-                buildTextFormField(context, _conditionController, 'Condition',
-                    Icons.build_circle,
-                    fieldType: FieldType.dropdown,
-                    dropdownItems: conditionOptions),
-                buildTextFormField(
-                    context, _locationController, 'Localisation', Icons.place),
-                // Zone de téléchargement d'image
-                GestureDetector(
-                  onTap: () {}, // Logique pour choisir une image
-                  child: Container(
-                    height: 200,
-                    color: Colors.grey[200],
-                    child: _imageFile != null
-                        ? Image.file(File(_imageFile!.path))
-                        : const Icon(Icons.add_a_photo),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: _createBook,
-                  child: const Text('Créer le livre'),
-                ),
-              ],
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(32.0),
+              child: Text("Créer un nouveau livre",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
             ),
-          ),
+            Form(
+              key: _formKey,
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  children: <Widget>[
+                    buildTextFormField(
+                        context, _titleController, 'Titre', Icons.book),
+                    buildTextFormField(
+                        context, _authorController, 'Auteur', Icons.person),
+                    buildTextFormField(
+                        context, _isbnController, 'ISBN', Icons.code),
+                    buildTextFormField(context, _publisherController, 'Éditeur',
+                        Icons.business),
+                    buildTextFormField(context, _yearController,
+                        'Année de publication', Icons.calendar_today,
+                        fieldType: FieldType
+                            .date // Utilisez le type de champ date pour la date de publication
+                        ),
+                    buildTextFormField(
+                        context, _genreController, 'Genre', Icons.category),
+                    buildTextFormField(
+                        context, _summaryController, 'Résumé', Icons.subject,
+                        maxLines: 3),
+                    buildTextFormField(
+                        context, _languageController, 'Langue', Icons.language),
+                    buildTextFormField(
+                        context, _statusController, 'Statut', Icons.info,
+                        fieldType: FieldType.dropdown,
+                        dropdownItems: statusOptions),
+                    buildTextFormField(context, _conditionController,
+                        'Condition', Icons.build_circle,
+                        fieldType: FieldType.dropdown,
+                        dropdownItems: conditionOptions),
+                    buildTextFormField(context, _locationController,
+                        'Localisation', Icons.place),
+                    // Zone de téléchargement d'image
+                    GestureDetector(
+                      onTap: () {}, // Logique pour choisir une image
+                      child: Container(
+                        height: 200,
+                        color: Colors.grey[200],
+                        child: _imageFile != null
+                            ? Image.file(File(_imageFile!.path))
+                            : const Icon(Icons.add_a_photo),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: _createBook,
+                      child: const Text('Créer le livre'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

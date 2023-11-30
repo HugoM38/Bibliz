@@ -22,56 +22,74 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Inscription'),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text("Bibliz"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _usernameController,
-              decoration: const InputDecoration(labelText: "Nom d'utilisateur"),
-            ),
-            const SizedBox(height: 16.0),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Mot de passe'),
-              obscureText: true,
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                String username = _usernameController.text;
-                String password = sha256
-                    .convert(utf8.encode(_passwordController.text))
-                    .toString();
-
-                UserQuery()
-                    .signup(User(
-                        username: username,
-                        password: password,
-                        roles: ["user"]))
-                    .then((value) async {
-                  await SharedPrefs().setCurrentUser(username);
-                  if (context.mounted) {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomePage()));
-                  }
-                }).catchError((error) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(error.toString()),
-                      duration: const Duration(seconds: 3),
-                    ),
-                  );
-                });
-              },
-              child: const Text('Inscription'),
-            ),
-          ],
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "Inscription",
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 32.0),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.3,
+                child: TextField(
+                  controller: _usernameController,
+                  decoration:
+                      const InputDecoration(labelText: "Nom d'utilisateur"),
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.3,
+                child: TextField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(labelText: 'Mot de passe'),
+                  obscureText: true,
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    String username = _usernameController.text;
+                    String password = sha256
+                        .convert(utf8.encode(_passwordController.text))
+                        .toString();
+                          
+                    UserQuery()
+                        .signup(User(
+                            username: username,
+                            password: password,
+                            roles: ["user"]))
+                        .then((value) async {
+                      await SharedPrefs().setCurrentUser(username);
+                      if (context.mounted) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomePage()));
+                      }
+                    }).catchError((error) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(error.toString()),
+                          duration: const Duration(seconds: 3),
+                        ),
+                      );
+                    });
+                  },
+                  child: const Text('Inscription'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

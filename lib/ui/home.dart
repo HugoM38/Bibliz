@@ -15,7 +15,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bibliz'),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text("Bibliz"),
         actions: [
           ElevatedButton(
               onPressed: () async {
