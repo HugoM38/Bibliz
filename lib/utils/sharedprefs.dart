@@ -1,7 +1,10 @@
+import 'package:bibliz/database/users/user.dart';
+import 'package:bibliz/database/users/user_roles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefs {
   final String _userKey = 'currentUser';
+  final String _userRoleKey = 'currentUserRole';
   late SharedPreferences prefs;
 
   SharedPrefs._privateConstructor(); // Constructeur privé pour le singleton
@@ -20,11 +23,20 @@ class SharedPrefs {
     return prefs.getString(_userKey);
   }
 
+  UserRole? getCurrentUserRole() {
+    return User.parseUserRole(prefs.getString(_userRoleKey)!);
+  }
+
   Future<void> setCurrentUser(String value) async {
     await prefs.setString(_userKey, value);
   }
 
-  Future<bool> removeCurrentUser() async {
-    return prefs.remove(_userKey);
+  Future<void> setCurrentUserRole(UserRole value) async {
+    await prefs.setString(_userRoleKey, value.name);
+  }
+
+  Future<void> removeCurrentUser() async {
+    await prefs.remove(_userRoleKey);
+    await prefs.remove(_userKey);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:bibliz/database/users/user_roles.dart';
 import 'package:bibliz/ui/administrator/administrator.dart';
 import 'package:bibliz/ui/create_book_page.dart';
 import 'package:bibliz/ui/account/signin.dart';
@@ -31,14 +32,17 @@ class _HomePageState extends State<HomePage> {
                 }
               },
               child: const Text("Se déconnecter")),
-          ElevatedButton(onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const Administrator()
-              )
-            );
-          }, child: const Text("Administration"))
+          ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const Administrator()));
+              },
+              child:
+                  SharedPrefs().getCurrentUserRole() == UserRole.administrator
+                      ? const Text("Administration")
+                      : const Text("Gérer mon compte"))
         ],
       ),
       body: const Center(

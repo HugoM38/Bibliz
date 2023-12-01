@@ -81,6 +81,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                     UserQuery().signup(user).then((value) async {
                       await SharedPrefs().setCurrentUser(username);
+                      await SharedPrefs().setCurrentUserRole(UserRole.member);
                       if (context.mounted) {
                         Navigator.pushReplacement(
                             context,

@@ -74,6 +74,7 @@ class _SigninPageState extends State<SigninPage> {
                           .signin(username, password)
                           .then((value) async {
                         await SharedPrefs().setCurrentUser(username);
+                        await SharedPrefs().setCurrentUserRole(value!.role);
                         if (context.mounted) {
                           Navigator.pushReplacement(
                               context,
