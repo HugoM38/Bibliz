@@ -1,3 +1,4 @@
+import 'package:bibliz/database/books/book_detail_modal.dart';
 import 'package:bibliz/database/users/user_roles.dart';
 import 'package:bibliz/ui/management/administration.dart';
 import 'package:bibliz/ui/management/book_management.dart';
@@ -126,7 +127,12 @@ class _HomePageState extends State<HomePage> {
                         elevation: 4.0, // Ajoute une légère ombre
                         child: InkWell(
                           onTap: () {
-                            // Action lors du clic sur un livre
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return BookDetailModal(book: books[index]);
+                              },
+                            );
                           },
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
