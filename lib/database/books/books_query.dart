@@ -22,15 +22,15 @@ class BookQuery {
     }
   }
 
-  Future<Book?> getBookByTitle(String title) async {
-    QuerySnapshot query =
-        await booksCollection.where('title', isEqualTo: title).get();
-    if (query.docs.isNotEmpty) {
-      Map<String, dynamic> book =
-          query.docs.first.data() as Map<String, dynamic>;
-      return Book.fromMap(book);
-    } else {
-      throw ErrorDescription("Ce livre n'existe pas");
+  Future<List<Book>> getBooks(int count) async {
+    QuerySnapshot query = await booksCollection.limit(count).get();
+    List<Book> books = [];
+
+    for (var doc in query.docs) {
+      Map<String, dynamic> bookData = doc.data() as Map<String, dynamic>;
+      books.add(Book.fromMap(bookData));
     }
+
+    return books;
   }
 }
