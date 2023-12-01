@@ -2,11 +2,12 @@ import 'dart:typed_data';
 
 import 'package:bibliz/database/books/book.dart';
 import 'package:bibliz/database/books/books_query.dart';
+import 'package:bibliz/database/database.dart';
 import 'package:bibliz/shared/build_text_form_field.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as p;
+import 'package:path/path.dart' as path;
 
 class CreateBookPage extends StatefulWidget {
   const CreateBookPage({super.key});
@@ -16,16 +17,9 @@ class CreateBookPage extends StatefulWidget {
 }
 
 class _CreateBookPageState extends State<CreateBookPage> {
-  final _formKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
   Uint8List? _imageBytes;
   Book? newBook;
-  List<String> statusOptions = [
-    'Disponible',
-    'Emprunté',
-    'En réparation',
-    'Perdu'
-  ];
   List<String> conditionOptions = ['Neuf', 'Bon', 'Usé', 'Endommagé'];
 
   final TextEditingController _titleController = TextEditingController();
@@ -36,7 +30,6 @@ class _CreateBookPageState extends State<CreateBookPage> {
   final TextEditingController _genreController = TextEditingController();
   final TextEditingController _summaryController = TextEditingController();
   final TextEditingController _languageController = TextEditingController();
-  final TextEditingController _statusController = TextEditingController();
   final TextEditingController _conditionController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
 
@@ -53,7 +46,6 @@ class _CreateBookPageState extends State<CreateBookPage> {
     _genreController.dispose();
     _summaryController.dispose();
     _languageController.dispose();
-    _statusController.dispose();
     _conditionController.dispose();
     _locationController.dispose();
     super.dispose();
@@ -67,7 +59,8 @@ class _CreateBookPageState extends State<CreateBookPage> {
         final bytes = await pickedFile.readAsBytes();
         setState(() {
           _imageBytes = bytes;
-          _imageExtension = p.extension(pickedFile.path); // Stocker l'extension
+          _imageExtension =
+              path.extension(pickedFile.path); // Stocker l'extension
         });
       }
     } catch (e) {
@@ -84,8 +77,10 @@ class _CreateBookPageState extends State<CreateBookPage> {
               '.jpg'); // Utiliser '.jpg' comme extension par défaut
 
       // Créer une référence au chemin où l'image sera stockée
-      final ref =
-          FirebaseStorage.instance.ref().child('images/$fileNameWithExtension');
+      final ref = Database()
+          .firebaseStorage
+          .ref()
+          .child('images/$fileNameWithExtension');
 
       // Télécharger l'image
       final result = await ref.putData(imageBytes);
@@ -102,6 +97,29 @@ class _CreateBookPageState extends State<CreateBookPage> {
     String? imageUrl;
     if (_imageBytes != null) {
       imageUrl = await uploadImage(_imageBytes!, _isbnController.text);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Vous n'avez mis aucune image"),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (_titleController.text.isEmpty ||
+        _authorController.text.isEmpty ||
+        _isbnController.text.isEmpty) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content:
+                Text("Veuillez saisir au moins un titre un auteur et un isbn"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      return;
     }
 
     Book newBook = Book(
@@ -113,7 +131,7 @@ class _CreateBookPageState extends State<CreateBookPage> {
       genre: _genreController.text,
       summary: _summaryController.text,
       language: _languageController.text,
-      status: _statusController.text,
+      status: 'Disponible',
       condition: _conditionController.text,
       location: _locationController.text,
       imageUrl: imageUrl,
@@ -156,73 +174,65 @@ class _CreateBookPageState extends State<CreateBookPage> {
                 ),
               ),
               Center(
-                child: Container(
+                child: SizedBox(
                   width: MediaQuery.of(context).size.width *
                       0.45, // Ajustez la largeur ici
                   child: Card(
                     elevation: 5,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          children: <Widget>[
-                            buildTextFormField(
-                                context, _titleController, 'Titre', Icons.book),
-                            buildTextFormField(context, _authorController,
-                                'Auteur', Icons.person),
-                            buildTextFormField(
-                                context, _isbnController, 'ISBN', Icons.code),
-                            buildTextFormField(context, _publisherController,
-                                'Éditeur', Icons.business),
-                            buildTextFormField(context, _yearController,
-                                'Année de publication', Icons.calendar_today,
-                                fieldType: FieldType.date),
-                            buildTextFormField(context, _genreController,
-                                'Genre', Icons.category),
-                            buildTextFormField(context, _summaryController,
-                                'Résumé', Icons.subject,
-                                maxLines: 3),
-                            buildTextFormField(context, _languageController,
-                                'Langue', Icons.language),
-                            buildTextFormField(context, _statusController,
-                                'Statut', Icons.info,
-                                fieldType: FieldType.dropdown,
-                                dropdownItems: statusOptions),
-                            buildTextFormField(context, _conditionController,
-                                'Condition', Icons.build_circle,
-                                fieldType: FieldType.dropdown,
-                                dropdownItems: conditionOptions),
-                            GestureDetector(
-                              onTap: _pickImage,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Container(
-                                  height: 300,
-                                  width: 300,
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[200],
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: _imageBytes != null
-                                      ? ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          child: Image.memory(
-                                            _imageBytes!,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        )
-                                      : const Icon(Icons.add_a_photo, size: 50),
+                      child: Column(
+                        children: <Widget>[
+                          buildTextFormField(
+                              context, _titleController, 'Titre', Icons.book),
+                          buildTextFormField(context, _authorController,
+                              'Auteur', Icons.person),
+                          buildTextFormField(
+                              context, _isbnController, 'ISBN', Icons.code),
+                          buildTextFormField(context, _publisherController,
+                              'Éditeur', Icons.business),
+                          buildTextFormField(context, _yearController,
+                              'Année de publication', Icons.calendar_today,
+                              fieldType: FieldType.date),
+                          buildTextFormField(context, _genreController, 'Genre',
+                              Icons.category),
+                          buildTextFormField(context, _summaryController,
+                              'Résumé', Icons.subject,
+                              maxLines: 3),
+                          buildTextFormField(context, _languageController,
+                              'Langue', Icons.language),
+                          buildTextFormField(context, _conditionController,
+                              'Condition', Icons.build_circle,
+                              fieldType: FieldType.dropdown,
+                              dropdownItems: conditionOptions),
+                          GestureDetector(
+                            onTap: _pickImage,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                height: 300,
+                                width: 300,
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
+                                child: _imageBytes != null
+                                    ? ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: Image.memory(
+                                          _imageBytes!,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                    : const Icon(Icons.add_a_photo, size: 50),
                               ),
                             ),
-                            ElevatedButton(
-                              onPressed: _createBook,
-                              child: const Text('Créer le livre'),
-                            ),
-                          ],
-                        ),
+                          ),
+                          ElevatedButton(
+                            onPressed: _createBook,
+                            child: const Text('Créer le livre'),
+                          ),
+                        ],
                       ),
                     ),
                   ),

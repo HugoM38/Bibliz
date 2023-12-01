@@ -45,7 +45,7 @@ class _SigninPageState extends State<SigninPage> {
               child: TextField(
                 controller: _usernameController,
                 decoration:
-                const InputDecoration(labelText: "Nom d'utilisateur"),
+                    const InputDecoration(labelText: "Nom d'utilisateur"),
               ),
             ),
             const SizedBox(height: 16.0),
