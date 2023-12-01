@@ -1,5 +1,7 @@
 import 'package:bibliz/database/users/user_roles.dart';
-import 'package:bibliz/ui/administrator/edit_profil.dart';
+import 'package:bibliz/ui/management/administration.dart';
+import 'package:bibliz/ui/management/book_management.dart';
+import 'package:bibliz/ui/management/edit_profil.dart';
 import 'package:bibliz/database/books/book.dart'; // Assurez-vous que ce chemin est correct
 import 'package:bibliz/database/books/books_query.dart'; // Assurez-vous que ce chemin est correct
 import 'package:flutter/material.dart';
@@ -34,6 +36,53 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Widget _getManagementButton() {
+    Widget widget;
+    switch (SharedPrefs().getCurrentUserRole()) {
+      case UserRole.member:
+        widget = ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const EditProfilePage()));
+            },
+            child: const Text("Gestion du profil"));
+        break;
+      case UserRole.librarian:
+        widget = ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const BookManagementPage()));
+            },
+            child: const Text("Gestion des livres"));
+        break;
+      case UserRole.administrator:
+        widget = ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AdministrationPage()));
+            },
+            child: const Text("Administration"));
+        break;
+      default:
+        widget = ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const EditProfilePage()));
+            },
+            child: const Text("Modifier mon profil"));
+    }
+
+    return widget;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,17 +102,7 @@ class _HomePageState extends State<HomePage> {
                 }
               },
               child: const Text("Se déconnecter")),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const Administrator()));
-              },
-              child:
-                  SharedPrefs().getCurrentUserRole() == UserRole.administrator
-                      ? const Text("Administration")
-                      : const Text("Gérer mon compte"))
+          _getManagementButton()
         ],
       ),
       body: books.isEmpty
