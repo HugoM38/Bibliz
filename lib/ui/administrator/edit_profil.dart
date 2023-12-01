@@ -35,7 +35,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     'Perdu'
   ];
   String? username = SharedPrefs().getCurrentUser();
-  final int role = 1;
+  final int role = 0;
   @override
   void dispose() {
     _usernameController.dispose();
@@ -178,29 +178,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
               },
               child: const Text('Enregistrer nouveau mot de passe'),
             ),
-            const SizedBox(height: 20.0),
-            if(role == 1)
-              Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    buildTextFormField(
-                        context, _statusController, 'Biblio', Icons.info,
-                        fieldType: FieldType.dropdown,
-                        dropdownItems: statusOptions),
-                    const SizedBox(height: 20.0)
-                  ]
-              ),
-            if(role == 2)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  buildTextFormField(
-                      context, _statusController, 'Admin', Icons.info,
-                      fieldType: FieldType.dropdown,
-                      dropdownItems: statusOptions),
-                  const SizedBox(height: 20.0),
-                ]
-              )
           ],
         ),
       ),

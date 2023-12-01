@@ -1,5 +1,5 @@
 import 'package:bibliz/database/users/user_roles.dart';
-import 'package:bibliz/ui/administrator/administrator.dart';
+import 'package:bibliz/ui/administrator/edit_profil.dart';
 import 'package:bibliz/database/books/book.dart'; // Assurez-vous que ce chemin est correct
 import 'package:bibliz/database/books/books_query.dart'; // Assurez-vous que ce chemin est correct
 import 'package:flutter/material.dart';
