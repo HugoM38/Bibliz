@@ -25,7 +25,8 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _oldPasswordController = TextEditingController();
   final TextEditingController _statusController = TextEditingController();
   List<String> statusOptions = [
     'Disponible',
@@ -38,7 +39,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void dispose() {
     _usernameController.dispose();
-    _passwordController.dispose();
+    _newPasswordController.dispose();
+    _oldPasswordController.dispose();
     super.dispose();
   }
 
@@ -47,7 +49,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
       appBar: AppBar(title: const Text('Modifier le profil')),
       body: Padding(
-        padding: EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -63,68 +65,116 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: () {
-                showDialog(context: context,
-                  builder: (BuildContext context) {
-                    String newUsername = _usernameController.text;
-                    UserQuery().usernameUpdate(username!, newUsername).then((value) => SharedPrefs().setCurrentUser(newUsername));
-                    return AlertDialog(
-                      title: Text('Alerte'),
-                      content: Text('Votre username a été changé en $newUsername'),
-                      actions: [
-                        TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              Navigator.pushReplacement(context,
-                                MaterialPageRoute(
-                                  builder: (context) => const HomePage()
-                                )
-                              );
-                          },
-                          child: Text('OK'),
-                        ),
-                      ]);
-                    }
+              onPressed: () async {
+                String newUsername = _usernameController.text;
+                bool done = false;
+                await UserQuery().usernameUpdate(username!, newUsername).then((value) => done = value);
+                if(context.mounted) {
+                  showDialog(context: context,
+                      builder: (BuildContext context) {
+                        if (done) {
+                          SharedPrefs().setCurrentUser(newUsername);
+                          return AlertDialog(
+                              title: const Text('Alerte'),
+                              content: Text(
+                                  'Votre username a été changé en $newUsername'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    Navigator.pushReplacement(context,
+                                        MaterialPageRoute(
+                                            builder: (
+                                                context) => const HomePage()
+                                        )
+                                    );
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ]);
+                        } else {
+                          return AlertDialog(
+                              title: const Text('Alerte'),
+                              content: Text(
+                                  'Votre username n\'a pas été changé en $newUsername'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('OK'),
+                                ),
+                              ]);
+                        }
+                      }
+
                   );
+                }
                 },child: const Text('Enregistrer nouvel username')
               ),
             const SizedBox(height: 20.0),
 
 
             TextFormField(
-              controller: _passwordController,
+              controller: _oldPasswordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: 'Ancien mot de passe',
+                border: OutlineInputBorder(),
+              ),
+            ),
+
+            const SizedBox(height: 20.0),
+            TextFormField(
+              controller: _newPasswordController,
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: 'Nouveau mot de passe',
                 border: OutlineInputBorder(),
               ),
             ),
-
             const SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: () {
-                showDialog(context: context,
-                  builder: (BuildContext context) {
-                    UserQuery().passwordUpdate(username!, _passwordController.text);
-                    return AlertDialog(
-                      title: Text('Alerte'),
-                      content: Text('Votre mot de passe a bien été changé'),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const HomePage()
-                                )
-                            );
-                          },
-                          child: Text('OK'),
-                        ),
-                      ],
-                    );
+              onPressed: () async {
+                bool done = await UserQuery().passwordUpdate(username!, _oldPasswordController.text, _newPasswordController.text);
+                if(context.mounted){
+                  showDialog(context: context,
+                    builder: (BuildContext context) {
+                      if(done){
+                        return AlertDialog(
+                          title: const Text('Alerte'),
+                          content: const Text('Votre mot de passe a bien été changé'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const HomePage()
+                                    )
+                                );
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return AlertDialog(
+                          title: const Text('Alerte'),
+                          content: const Text('Votre mot de passe n\'a pas été changé. Veuillez resaisir votre ancien mot de passe'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      }
                   });
+                }
               },
               child: const Text('Enregistrer nouveau mot de passe'),
             ),

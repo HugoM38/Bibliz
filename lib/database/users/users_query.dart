@@ -38,38 +38,55 @@ class UserQuery {
     }
   }
 
-  Future<void> passwordUpdate(String username, String password) async {
+  Future<bool> passwordUpdate(String username, String oldPassword, String newPassword) async {
+    String oldPasswordHash = sha256
+        .convert(utf8.encode(oldPassword))
+        .toString();
     QuerySnapshot query = await usersCollection
         .where('username', isEqualTo: username)
+        .where('password', isEqualTo: oldPasswordHash)
         .get()
         .catchError((error) {
       throw error;
     });
     if (query.docs.isNotEmpty) {
-      String passwordHash = sha256
-          .convert(utf8.encode(password))
+      String newPasswordHash = sha256
+          .convert(utf8.encode(newPassword))
           .toString();
-      debugPrint(passwordHash);
-      await usersCollection.doc(query.docs.first.id).update({'password': passwordHash}).then((value) => debugPrint("Updated"));
+      await usersCollection.doc(query.docs.first.id).update({'password': newPasswordHash}).then((value) => debugPrint("Updated"));
+      return true;
+    } else {
+      return false;
     }
   }
 
-  Future<void> usernameUpdate(String username, String newUsername) async {
+  Future<bool> usernameUpdate(String username, String newUsername) async {
     QuerySnapshot query = await usersCollection
         .where('username', isEqualTo: username)
         .get()
         .catchError((error) {
       throw error;
     });
-    debugPrint("Avant if:");
     if (query.docs.isNotEmpty) {
       debugPrint("if statement");
-      await usersCollection.doc(query.docs.first.id).update({'username': newUsername}).then((value) => debugPrint("Updated"));
+      var userExist = await getUserRoleWithUserName(newUsername);
+      if(userExist == null) {
+        debugPrint("final true");
+        await usersCollection.doc(query.docs.first.id).update({'username': newUsername}).then((value) => debugPrint("Updated"));
+        return true;
+      } else {
+        debugPrint("final false");
+        return false;
+      }
+    } else {
+      debugPrint("false");
+
+      return false;
     }
   }
 
   
-  Future<Object> getUser() async {
+  Future<Object?> getUser() async {
     try {
       var user = [];
       QuerySnapshot<Object?> documents = await usersCollection.get();
@@ -80,21 +97,24 @@ class UserQuery {
       }
       return user;
     } catch (e) {
-      return Null;
+      return null;
     }
   }
 
-  Future<Object> getUserRoleWithUserName(String username) async {
+  Future<Object?> getUserRoleWithUserName(String username) async {
     try {
       QuerySnapshot<Object?> documents = await usersCollection.where('username', isEqualTo: username).get();
       if(documents.docs.isNotEmpty){
+        var v = documents.docs.first.data().toString();
+        debugPrint('TEST TEST $v');
         return User.fromMap(documents.docs[0].data() as Map<String, dynamic>);
       } else {
-        return Null;
+        debugPrint('NULL');
+        return null;
       }
 
     } catch (e) {
-      return Null;
+      return null;
     }
   }
 }
