@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:bibliz/database/users/library_user_factory.dart';
 import 'package:bibliz/database/users/user.dart';
+import 'package:bibliz/database/users/user_roles.dart';
 import 'package:bibliz/database/users/users_query.dart';
 import 'package:bibliz/ui/home.dart';
 import 'package:bibliz/utils/sharedprefs.dart';
@@ -74,12 +76,10 @@ class _SignUpPageState extends State<SignUpPage> {
                         .convert(utf8.encode(_passwordController.text))
                         .toString();
 
-                    UserQuery()
-                        .signup(User(
-                        username: username,
-                        password: password,
-                        roles: ["user"]))
-                        .then((value) async {
+                    User user = LibraryUserFactory()
+                        .createUser(username, password, UserRole.member);
+
+                    UserQuery().signup(user).then((value) async {
                       await SharedPrefs().setCurrentUser(username);
                       if (context.mounted) {
                         Navigator.pushReplacement(

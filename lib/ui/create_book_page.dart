@@ -6,7 +6,6 @@ import 'package:bibliz/shared/build_text_form_field.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
 
 class CreateBookPage extends StatefulWidget {
   const CreateBookPage({super.key});
