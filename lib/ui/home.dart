@@ -18,16 +18,18 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Book> books = [];
+  int crossAxisCount = 6;
+  int booksCount = 100;
 
   @override
   void initState() {
     super.initState();
-    _loadBooks();
+    _loadBooks(booksCount);
   }
 
-  Future<void> _loadBooks() async {
+  Future<void> _loadBooks(int count) async {
     try {
-      List<Book> loadedBooks = await BookQuery().getBooks(100);
+      List<Book> loadedBooks = await BookQuery().getBooks(count);
       setState(() {
         books = loadedBooks;
       });
@@ -107,21 +109,66 @@ class _HomePageState extends State<HomePage> {
       ),
       body: books.isEmpty
           ? const Center(child: Text('Aucun livre disponible.'))
-          : ListView.builder(
-              itemCount: books.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    leading: books[index].imageUrl != null
-                        ? Image.network(books[index].imageUrl!,
-                            fit: BoxFit.cover)
-                        : const SizedBox
-                            .shrink(), // Pas d'image si imageUrl est null
-                    title: Text(books[index].title),
-                    subtitle: Text(books[index].summary),
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount:
+                          crossAxisCount, // Nombre d'éléments par ligne
+                      childAspectRatio: 0.7, // Ratio de l'aspect des éléments
+                    ),
+                    itemCount: books.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        elevation: 4.0, // Ajoute une légère ombre
+                        child: InkWell(
+                          onTap: () {
+                            // Action lors du clic sur un livre
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                          books[index].imageUrl ?? ''),
+                                      fit: BoxFit.cover,
+                                    ),
+                                    borderRadius: BorderRadius.circular(4.0),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  books[index].title,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Text(
+                                  books[index].author,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
+                ),
+              ),
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -132,6 +179,43 @@ class _HomePageState extends State<HomePage> {
         },
         tooltip: 'Ajouter un livre',
         child: const Icon(Icons.add),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            DropdownButton<int>(
+              value: crossAxisCount,
+              onChanged: (int? newValue) {
+                setState(() {
+                  crossAxisCount = newValue!;
+                });
+              },
+              items: <int>[6, 7, 8].map<DropdownMenuItem<int>>((int value) {
+                return DropdownMenuItem<int>(
+                  value: value,
+                  child: Text('$value éléments par ligne'),
+                );
+              }).toList(),
+            ),
+            DropdownButton<int>(
+              value: booksCount,
+              onChanged: (int? newValue) {
+                setState(() {
+                  booksCount = newValue!;
+                  _loadBooks(booksCount);
+                });
+              },
+              items: <int>[50, 100, 150, 200]
+                  .map<DropdownMenuItem<int>>((int value) {
+                return DropdownMenuItem<int>(
+                  value: value,
+                  child: Text('Charger $value livres'),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
       ),
     );
   }
