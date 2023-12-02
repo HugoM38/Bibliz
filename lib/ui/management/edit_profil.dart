@@ -1,4 +1,5 @@
 import 'package:bibliz/database/users/users_query.dart';
+import 'package:bibliz/shared/validate_password.dart';
 import 'package:bibliz/ui/home.dart';
 import 'package:bibliz/utils/sharedprefs.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +15,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _oldPasswordController = TextEditingController();
-  List<String> statusOptions = [
-    'Disponible',
-    'Emprunté',
-    'En réparation',
-    'Perdu'
-  ];
+
   String? username = SharedPrefs().getCurrentUser();
   final int role = 0;
   @override
@@ -30,6 +26,48 @@ class _EditProfilePageState extends State<EditProfilePage> {
     super.dispose();
   }
 
+  void showAlert(bool success, String type, String? username) {
+    String content;
+    if (success) {
+      if (type == "username") {
+        content = "Votre nom d'utilisateur a été changé en $username";
+      } else {
+        content = 'Votre mot de passe a bien été changé';
+      }
+    } else {
+      if (type == "username") {
+        content = "Votre nom d'utilisateur n'a pas été changé en $username";
+      } else {
+        content =
+            "Votre mot de passe n'a pas été changé. Veuillez saisir a nouveau votre ancien mot de passe";
+      }
+    }
+
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          SharedPrefs().setCurrentUser(username!);
+          return AlertDialog(
+              title: success ? const Text('Succès') : const Text('Erreur'),
+              content: Text(content),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    if (success) {
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomePage()));
+                    }
+                  },
+                  child: const Text('OK'),
+                ),
+              ]);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,65 +76,60 @@ class _EditProfilePageState extends State<EditProfilePage> {
         title: const Text("Bibliz"),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            RichText(
-                text: TextSpan(text: "Votre username actuel est $username")),
-            TextFormField(
-              controller: _usernameController,
-              decoration: const InputDecoration(
-                labelText: 'Nouveau nom d\'utilisateur',
-                border: OutlineInputBorder(),
+            const Text(
+              "Modification du profil",
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 32.0),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("Votre nom d'utilisateur est $username"),
+                  ),
+                  TextFormField(
+                    controller: _usernameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Nouveau nom d\'utilisateur',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
-                onPressed: () async {
+                onPressed: () {
                   String newUsername = _usernameController.text;
-                  bool done = false;
-                  await UserQuery()
-                      .usernameUpdate(username!, newUsername)
-                      .then((value) => done = value);
-                  if (context.mounted) {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          if (done) {
-                            SharedPrefs().setCurrentUser(newUsername);
-                            return AlertDialog(
-                                title: const Text('Alerte'),
-                                content: Text(
-                                    'Votre username a été changé en $newUsername'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                      Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const HomePage()));
-                                    },
-                                    child: const Text('OK'),
-                                  ),
-                                ]);
-                          } else {
-                            return AlertDialog(
-                                title: const Text('Alerte'),
-                                content: Text(
-                                    'Votre username n\'a pas été changé en $newUsername'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('OK'),
-                                  ),
-                                ]);
-                          }
-                        });
+                  if (newUsername.isNotEmpty) {
+                    UserQuery()
+                        .usernameUpdate(username!, newUsername)
+                        .then((value) async {
+                      await SharedPrefs().setCurrentUser(newUsername);
+                      showAlert(true, 'username', newUsername);
+                    }).catchError((error) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(error.toString()),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      showAlert(false, 'username', newUsername);
+                    });
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Veuillez saisir un nom d'utilisateur"),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
                   }
                 },
                 child: const Text('Enregistrer nouvel username')),
@@ -120,48 +153,32 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
             const SizedBox(height: 20.0),
             ElevatedButton(
-              onPressed: () async {
-                bool done = await UserQuery().passwordUpdate(username!,
-                    _oldPasswordController.text, _newPasswordController.text);
-                if (context.mounted) {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        if (done) {
-                          return AlertDialog(
-                            title: const Text('Alerte'),
-                            content: const Text(
-                                'Votre mot de passe a bien été changé'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const HomePage()));
-                                },
-                                child: const Text('OK'),
-                              ),
-                            ],
-                          );
-                        } else {
-                          return AlertDialog(
-                            title: const Text('Alerte'),
-                            content: const Text(
-                                'Votre mot de passe n\'a pas été changé. Veuillez resaisir votre ancien mot de passe'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('OK'),
-                              ),
-                            ],
-                          );
-                        }
-                      });
+              onPressed: () {
+                if (_oldPasswordController.text.isNotEmpty &&
+                    _newPasswordController.text.isNotEmpty &&
+                    validatePassword(_newPasswordController.text)) {
+                  UserQuery()
+                      .passwordUpdate(username!, _oldPasswordController.text,
+                          _newPasswordController.text)
+                      .then((value) {
+                    showAlert(true, 'password', username);
+                  }).catchError((error) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(error.toString()),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    showAlert(false, 'password', username);
+                  });
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                          "Veuillez remplir les deux champs de mot de passe qui doit contenir 8 caractères minimum, 1 majuscule et 1 chiffre"),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               },
               child: const Text('Enregistrer nouveau mot de passe'),

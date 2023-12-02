@@ -38,83 +38,87 @@ class UserQuery {
     }
   }
 
-  Future<bool> passwordUpdate(String username, String oldPassword, String newPassword) async {
-    String oldPasswordHash = sha256
-        .convert(utf8.encode(oldPassword))
-        .toString();
+  Future<void> passwordUpdate(
+      String username, String oldPassword, String newPassword) async {
+    String oldPasswordHash =
+        sha256.convert(utf8.encode(oldPassword)).toString();
     QuerySnapshot query = await usersCollection
         .where('username', isEqualTo: username)
         .where('password', isEqualTo: oldPasswordHash)
         .get()
         .catchError((error) {
-      throw error;
+      throw Exception(
+          "Une erreur est survenue lors du changement de mot de passe");
     });
     if (query.docs.isNotEmpty) {
-      String newPasswordHash = sha256
-          .convert(utf8.encode(newPassword))
-          .toString();
-      await usersCollection.doc(query.docs.first.id).update({'password': newPasswordHash}).then((value) => debugPrint("Updated"));
-      return true;
+      String newPasswordHash =
+          sha256.convert(utf8.encode(newPassword)).toString();
+      usersCollection
+          .doc(query.docs.first.id)
+          .update({'password': newPasswordHash}).catchError((error) {
+        throw Exception(
+            "Une erreur est survenue lors du changement de mot de passe");
+      });
     } else {
-      return false;
+      throw Exception(
+          "Une erreur est survenue lors du changement de mot de passe");
     }
   }
 
-  Future<bool> usernameUpdate(String username, String newUsername) async {
+  Future<void> usernameUpdate(String username, String newUsername) async {
     QuerySnapshot query = await usersCollection
         .where('username', isEqualTo: username)
         .get()
         .catchError((error) {
-      throw error;
+      throw Exception(
+          "Une erreur est survenue lors du changement de nom d'utilisateur");
     });
-    if (query.docs.isNotEmpty) {
-      debugPrint("if statement");
-      var userExist = await getUserRoleWithUserName(newUsername);
-      if(userExist == null) {
-        debugPrint("final true");
-        await usersCollection.doc(query.docs.first.id).update({'username': newUsername}).then((value) => debugPrint("Updated"));
-        return true;
-      } else {
-        debugPrint("final false");
-        return false;
+
+    QuerySnapshot queryNewUsername = await usersCollection
+        .where('username', isEqualTo: newUsername)
+        .get()
+        .catchError((error) {
+      throw Exception(
+          "Une erreur est survenue lors du changement de nom d'utilisateur");
+    });
+    if (query.docs.isNotEmpty && queryNewUsername.docs.isEmpty) {
+      await usersCollection
+          .doc(query.docs.first.id)
+          .update({'username': newUsername}).catchError((error) {
+        throw Exception(
+            "Une erreur est survenue lors du changement de nom d'utilisateur");
+      });
+    } else {
+      throw Exception(
+          "Une erreur est survenue lors du changement de nom d'utilisateur");
+    }
+  }
+
+  Future<Object?> getUsers() async {
+    var users = [];
+    QuerySnapshot<Object?> documents = await usersCollection.get();
+    if (documents.docs.isNotEmpty) {
+      for (var document in documents.docs) {
+        users.add(User.fromMap(document.data() as Map<String, dynamic>));
       }
     } else {
-      debugPrint("false");
-
-      return false;
+      throw Exception("Aucun utilisateurs trouvé");
     }
+    return users;
   }
 
-  
-  Future<Object?> getUser() async {
-    try {
-      var user = [];
-      QuerySnapshot<Object?> documents = await usersCollection.get();
-      if(documents.docs.isNotEmpty){
-        for(var document in documents.docs){
-          user.add(User.fromMap(document.data() as Map<String, dynamic>));
-        }
-      }
-      return user;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  Future<Object?> getUserRoleWithUserName(String username) async {
-    try {
-      QuerySnapshot<Object?> documents = await usersCollection.where('username', isEqualTo: username).get();
-      if(documents.docs.isNotEmpty){
-        var v = documents.docs.first.data().toString();
-        debugPrint('TEST TEST $v');
-        return User.fromMap(documents.docs[0].data() as Map<String, dynamic>);
-      } else {
-        debugPrint('NULL');
-        return null;
-      }
-
-    } catch (e) {
-      return null;
+  Future<Object?> getUserByUserName(String username) async {
+    QuerySnapshot<Object?> documents = await usersCollection
+        .where('username', isEqualTo: username)
+        .get()
+        .catchError((error) {
+      throw Exception(
+          "Une erreur est survenue lors de la récupération de l'utilisateur");
+    });
+    if (documents.docs.isNotEmpty) {
+      return User.fromMap(documents.docs[0].data() as Map<String, dynamic>);
+    } else {
+      throw Exception("Aucun utilisateur trouvé à ce nom");
     }
   }
 }

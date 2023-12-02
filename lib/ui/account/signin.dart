@@ -38,7 +38,6 @@ class _SigninPageState extends State<SigninPage> {
               "Connexion",
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 16.0),
             const SizedBox(height: 32.0),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.3,
