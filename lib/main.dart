@@ -1,6 +1,11 @@
 import 'package:bibliz/firebase_options.dart';
 import 'package:bibliz/ui/account/signin.dart';
+import 'package:bibliz/ui/account/signup.dart';
+import 'package:bibliz/ui/create_book_page.dart';
 import 'package:bibliz/ui/home.dart';
+import 'package:bibliz/ui/management/administration.dart';
+import 'package:bibliz/ui/management/book_management.dart';
+import 'package:bibliz/ui/management/edit_profil.dart';
 import 'package:bibliz/utils/sharedprefs.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +17,7 @@ void main() async {
   );
 
   await SharedPrefs().initSharedPrefs();
-  String? currentUser = await SharedPrefs().getCurrentUser();
+  String? currentUser = SharedPrefs().getCurrentUser();
 
   print("Logged as $currentUser");
 
@@ -36,6 +41,15 @@ class Bibliz extends StatelessWidget {
         useMaterial3: true,
       ),
       home: MainPage(currentUser: currentUser),
+      routes: {
+        '/home': (context) => const HomePage(),
+        '/signin': (context) => const SigninPage(),
+        '/signup': (context) => const SignUpPage(),
+        '/edit_profile': (context) => const EditProfilePage(),
+        '/administration': (context) => const AdministrationPage(),
+        '/book_management': (context) => const BookManagementPage(),
+        '/create_book': (context) => const CreateBookPage(),
+      },
     );
   }
 }
@@ -52,6 +66,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: widget.currentUser != null ? const HomePage() : const SigninPage());
+        body:
+            widget.currentUser != null ? const HomePage() : const SigninPage());
   }
 }

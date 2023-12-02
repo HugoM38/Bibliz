@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:bibliz/database/users/users_query.dart';
-import 'package:bibliz/ui/account/signup.dart';
-import 'package:bibliz/ui/home.dart';
 import 'package:bibliz/utils/sharedprefs.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
@@ -75,10 +73,7 @@ class _SigninPageState extends State<SigninPage> {
                         await SharedPrefs().setCurrentUser(username);
                         await SharedPrefs().setCurrentUserRole(value!.role);
                         if (context.mounted) {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const HomePage()));
+                          Navigator.pushReplacementNamed(context, '/home');
                         }
                       }).catchError((error) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -96,10 +91,7 @@ class _SigninPageState extends State<SigninPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SignUpPage()));
+                    Navigator.pushNamed(context, '/signup');
                     },
                     child: const Text("S'inscrire"),
                   ),

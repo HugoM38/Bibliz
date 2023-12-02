@@ -1,13 +1,8 @@
 import 'package:bibliz/database/books/book_detail_modal.dart';
 import 'package:bibliz/database/users/user_roles.dart';
-import 'package:bibliz/ui/management/administration.dart';
-import 'package:bibliz/ui/management/book_management.dart';
-import 'package:bibliz/ui/management/edit_profil.dart';
-import 'package:bibliz/database/books/book.dart'; // Assurez-vous que ce chemin est correct
-import 'package:bibliz/database/books/books_query.dart'; // Assurez-vous que ce chemin est correct
+import 'package:bibliz/database/books/book.dart';
+import 'package:bibliz/database/books/books_query.dart';
 import 'package:flutter/material.dart';
-import 'package:bibliz/ui/create_book_page.dart';
-import 'package:bibliz/ui/account/signin.dart';
 import 'package:bibliz/utils/sharedprefs.dart';
 
 class HomePage extends StatefulWidget {
@@ -45,40 +40,28 @@ class _HomePageState extends State<HomePage> {
       case UserRole.member:
         widget = ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const EditProfilePage()));
+              Navigator.pushNamed(context, '/edit_profile');
             },
             child: const Text("Gestion du profil"));
         break;
       case UserRole.librarian:
         widget = ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const BookManagementPage()));
+              Navigator.pushNamed(context, '/book_management');
             },
             child: const Text("Gestion des livres"));
         break;
       case UserRole.administrator:
         widget = ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AdministrationPage()));
+              Navigator.pushNamed(context, '/administration');
             },
             child: const Text("Administration"));
         break;
       default:
         widget = ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const EditProfilePage()));
+              Navigator.pushNamed(context, '/edit_profil');
             },
             child: const Text("Modifier mon profil"));
     }
@@ -98,10 +81,7 @@ class _HomePageState extends State<HomePage> {
                 await SharedPrefs().removeCurrentUser();
 
                 if (context.mounted) {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SigninPage()));
+                  Navigator.pushReplacementNamed(context, '/signin');
                 }
               },
               child: const Text("Se déconnecter")),
@@ -178,10 +158,7 @@ class _HomePageState extends State<HomePage> {
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const CreateBookPage()),
-          );
+          Navigator.pushNamed(context, '/create_book');
         },
         tooltip: 'Ajouter un livre',
         child: const Icon(Icons.add),

@@ -1,6 +1,5 @@
 import 'package:bibliz/database/users/users_query.dart';
 import 'package:bibliz/shared/validate_password.dart';
-import 'package:bibliz/ui/home.dart';
 import 'package:bibliz/utils/sharedprefs.dart';
 import 'package:flutter/material.dart';
 
@@ -53,18 +52,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
               content: Text(content),
               actions: [
                 TextButton(
-                  onPressed: () {
+                  onPressed: () async {
                     Navigator.of(context).pop();
-                    if (success) {
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomePage()));
-                    }
                   },
                   child: const Text('OK'),
                 ),
               ]);
+        }).then((value) => {
+          if (success)
+            {
+              Navigator.pushNamedAndRemoveUntil(
+                context,
+                '/home',
+                (route) => false,
+              )
+            }
         });
   }
 

@@ -4,7 +4,6 @@ import 'package:bibliz/database/users/library_user_factory.dart';
 import 'package:bibliz/database/users/user.dart';
 import 'package:bibliz/database/users/user_roles.dart';
 import 'package:bibliz/database/users/users_query.dart';
-import 'package:bibliz/ui/home.dart';
 import 'package:bibliz/utils/sharedprefs.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
@@ -83,10 +82,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       await SharedPrefs().setCurrentUser(username);
                       await SharedPrefs().setCurrentUserRole(UserRole.member);
                       if (context.mounted) {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const HomePage()));
+                      Navigator.pushReplacementNamed(context, '/home');
                       }
                     }).catchError((error) {
                       ScaffoldMessenger.of(context).showSnackBar(
