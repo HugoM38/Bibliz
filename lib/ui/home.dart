@@ -14,6 +14,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Book> books = [];
+  bool isBooksLoaded = false;
   int crossAxisCount = 6;
   int booksCount = 100;
 
@@ -24,13 +25,27 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadBooks(int count) async {
-    try {
-      List<Book> loadedBooks = await BookQuery().getBooks(count);
+    if (!isBooksLoaded) {
+      // Modification ici
+      try {
+        List<Book> loadedBooks = await BookQuery().getBooks(count);
+        setState(() {
+          books = loadedBooks;
+          isBooksLoaded = true;
+        });
+      } catch (e) {
+        print('Erreur lors du chargement des livres: $e');
+      }
+    }
+  }
+
+  Future<void> _navigateAndAddNewBook() async {
+    final newBook = await Navigator.pushNamed(context, '/create_book');
+
+    if (newBook is Book) {
       setState(() {
-        books = loadedBooks;
+        books.add(newBook);
       });
-    } catch (e) {
-      print('Erreur lors du chargement des livres: $e');
     }
   }
 
@@ -158,7 +173,7 @@ class _HomePageState extends State<HomePage> {
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/create_book');
+          _navigateAndAddNewBook();
         },
         tooltip: 'Ajouter un livre',
         child: const Icon(Icons.add),
