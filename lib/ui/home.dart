@@ -2,6 +2,7 @@ import 'package:bibliz/database/books/book_detail_modal.dart';
 import 'package:bibliz/database/users/user_roles.dart';
 import 'package:bibliz/database/books/book.dart';
 import 'package:bibliz/database/books/books_query.dart';
+import 'package:bibliz/ui/widget/search_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:bibliz/utils/sharedprefs.dart';
 
@@ -14,9 +15,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Book> books = [];
+  List<Book> filteredBooks = [];
   bool isBooksLoaded = false;
   int crossAxisCount = 6;
   int booksCount = 100;
+
+  final TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -24,13 +28,24 @@ class _HomePageState extends State<HomePage> {
     _loadBooks(booksCount);
   }
 
+  void _filterBooks(String searchText) {
+    setState(() {
+      filteredBooks = books.where((book) {
+        final searchLower = searchText.toLowerCase();
+        return book.title.toLowerCase().contains(searchLower) ||
+            book.author.toLowerCase().contains(searchLower) ||
+            book.genre.toLowerCase().contains(searchLower);
+      }).toList();
+    });
+  }
+
   Future<void> _loadBooks(int count) async {
     if (!isBooksLoaded) {
-      // Modification ici
       try {
         List<Book> loadedBooks = await BookQuery().getBooks(count);
         setState(() {
           books = loadedBooks;
+          filteredBooks = loadedBooks; // Initialisez également filteredBooks
           isBooksLoaded = true;
         });
       } catch (e) {
@@ -89,7 +104,10 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Bibliz"),
+        title: SearchBarWidget(
+          searchController: searchController,
+          onSearchChanged: _filterBooks,
+        ),
         actions: [
           ElevatedButton(
               onPressed: () async {
@@ -109,66 +127,65 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.all(16.0),
               child: Card(
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount:
-                          crossAxisCount, // Nombre d'éléments par ligne
-                      childAspectRatio: 0.7, // Ratio de l'aspect des éléments
-                    ),
-                    itemCount: books.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        elevation: 4.0, // Ajoute une légère ombre
-                        child: InkWell(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return BookDetailModal(book: books[index]);
-                              },
-                            );
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                          books[index].imageUrl ?? ''),
-                                      fit: BoxFit.cover,
+                    padding: const EdgeInsets.all(8.0),
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount,
+                        childAspectRatio: 0.7,
+                      ),
+                      itemCount: filteredBooks.length,
+                      itemBuilder: (context, index) {
+                        final book = filteredBooks[
+                            index]; // Utilisez cette variable pour construire votre widget
+                        return Card(
+                          elevation: 4.0,
+                          child: InkWell(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return BookDetailModal(book: book);
+                                },
+                              );
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: NetworkImage(book.imageUrl ??
+                                            ''), // Utilisez 'book.imageUrl'
+                                        fit: BoxFit.cover,
+                                      ),
+                                      borderRadius: BorderRadius.circular(4.0),
                                     ),
-                                    borderRadius: BorderRadius.circular(4.0),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  books[index].title,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    book.title, // Utilisez 'book.title'
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
                                   ),
-                                  textAlign: TextAlign.center,
                                 ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Text(
-                                  books[index].author,
-                                  textAlign: TextAlign.center,
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
+                                  child: Text(
+                                    book.author, // Utilisez 'book.author'
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                        );
+                      },
+                    )),
               ),
             ),
       floatingActionButton: FloatingActionButton(
