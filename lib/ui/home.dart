@@ -69,13 +69,20 @@ class _HomePageState extends State<HomePage> {
     switch (SharedPrefs().getCurrentUserRole()) {
       case UserRole.member:
         widget = ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary),
             onPressed: () {
               Navigator.pushNamed(context, '/edit_profile');
             },
-            child: const Text("Gestion du profil"));
+            child: Text(
+              "Gestion du profil",
+              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            ));
         break;
       case UserRole.librarian:
         widget = ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary),
             onPressed: () {
               Navigator.pushNamed(context, '/book_management');
             },
@@ -83,17 +90,27 @@ class _HomePageState extends State<HomePage> {
         break;
       case UserRole.administrator:
         widget = ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary),
             onPressed: () {
               Navigator.pushNamed(context, '/administration');
             },
-            child: const Text("Administration"));
+            child: Text(
+              "Administration",
+              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            ));
         break;
       default:
         widget = ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary),
             onPressed: () {
               Navigator.pushNamed(context, '/edit_profil');
             },
-            child: const Text("Modifier mon profil"));
+            child: Text(
+              "Modifier mon profil",
+              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            ));
     }
 
     return widget;
@@ -102,30 +119,57 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+        leading: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+              child: Image.asset(
+                'logo.png',
+                width: 40.0,
+                height: 40.0,
+              ),
+            ),
+          ],
+        ),
         title: SearchBarWidget(
           searchController: searchController,
           onSearchChanged: _filterBooks,
         ),
         actions: [
-          ElevatedButton(
-              onPressed: () async {
-                await SharedPrefs().removeCurrentUser();
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary),
+                onPressed: () async {
+                  await SharedPrefs().removeCurrentUser();
 
-                if (context.mounted) {
-                  Navigator.pushReplacementNamed(context, '/signin');
-                }
-              },
-              child: const Text("Se déconnecter")),
+                  if (context.mounted) {
+                    Navigator.pushReplacementNamed(context, '/signin');
+                  }
+                },
+                child: Text(
+                  "Se déconnecter",
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.secondary),
+                )),
+          ),
           _getManagementButton()
         ],
       ),
       body: books.isEmpty
-          ? const Center(child: Text('Aucun livre disponible.'))
+          ? Center(
+              child: Text(
+              'Aucun livre disponible.',
+              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            ))
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: Card(
+                color: Theme.of(context).colorScheme.secondary,
                 child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: GridView.builder(
@@ -138,6 +182,7 @@ class _HomePageState extends State<HomePage> {
                         final book = filteredBooks[
                             index]; // Utilisez cette variable pour construire votre widget
                         return Card(
+                          color: Theme.of(context).colorScheme.primary,
                           elevation: 4.0,
                           child: InkWell(
                             onTap: () {
@@ -166,8 +211,11 @@ class _HomePageState extends State<HomePage> {
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    book.title, // Utilisez 'book.title'
-                                    style: const TextStyle(
+                                    book.title,
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
                                         fontWeight: FontWeight.bold),
                                     textAlign: TextAlign.center,
                                   ),
@@ -176,7 +224,11 @@ class _HomePageState extends State<HomePage> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 8.0),
                                   child: Text(
-                                    book.author, // Utilisez 'book.author'
+                                    book.author,
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
@@ -196,11 +248,19 @@ class _HomePageState extends State<HomePage> {
         child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomAppBar(
+        color: Theme.of(context).colorScheme.secondary,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             DropdownButton<int>(
+              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+              dropdownColor: Theme.of(context).colorScheme.secondary,
               value: crossAxisCount,
+              elevation: 8,
+              icon: Icon(Icons.arrow_drop_down,
+                  color: Theme.of(context).colorScheme.primary),
+              underline: Container(
+                  height: 2, color: Theme.of(context).colorScheme.primary),
               onChanged: (int? newValue) {
                 setState(() {
                   crossAxisCount = newValue!;
@@ -209,12 +269,21 @@ class _HomePageState extends State<HomePage> {
               items: <int>[6, 7, 8].map<DropdownMenuItem<int>>((int value) {
                 return DropdownMenuItem<int>(
                   value: value,
-                  child: Text('$value éléments par ligne'),
+                  child: Text(
+                    '$value éléments par ligne',
+                  ),
                 );
               }).toList(),
             ),
             DropdownButton<int>(
               value: booksCount,
+              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+              dropdownColor: Theme.of(context).colorScheme.secondary,
+              elevation: 8,
+              icon: Icon(Icons.arrow_drop_down,
+                  color: Theme.of(context).colorScheme.primary),
+              underline: Container(
+                  height: 2, color: Theme.of(context).colorScheme.primary),
               onChanged: (int? newValue) {
                 setState(() {
                   booksCount = newValue!;

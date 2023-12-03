@@ -4,6 +4,7 @@ import 'package:bibliz/database/users/library_user_factory.dart';
 import 'package:bibliz/database/users/user.dart';
 import 'package:bibliz/database/users/user_roles.dart';
 import 'package:bibliz/database/users/users_query.dart';
+import 'package:bibliz/shared/build_app_bar.dart';
 import 'package:bibliz/utils/sharedprefs.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
@@ -22,10 +23,7 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Bibliz"),
-      ),
+      appBar: buildAppBar(context),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(

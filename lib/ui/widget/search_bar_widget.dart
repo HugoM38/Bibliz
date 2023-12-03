@@ -14,10 +14,14 @@ class SearchBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: searchController,
-      decoration: const InputDecoration(
-        hintText: 'Rechercher un livre',
-        suffixIcon: Icon(Icons.search),
-      ),
+      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+      decoration: InputDecoration(
+          filled: true,
+          fillColor: Theme.of(context).colorScheme.primary,
+          hintText: 'Rechercher un livre',
+          hintStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
+          suffixIcon: const Icon(Icons.search),
+          suffixIconColor: Theme.of(context).colorScheme.secondary),
       onChanged: (value) => onSearchChanged(value),
     );
   }

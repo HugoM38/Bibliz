@@ -37,7 +37,10 @@ class Bibliz extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Bibliz',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber.shade600),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 8, 50, 70),
+            primary: const Color.fromARGB(255, 8, 50, 70),
+            secondary: const Color.fromARGB(255, 246, 221, 207)),
         useMaterial3: true,
       ),
       home: MainPage(currentUser: currentUser),

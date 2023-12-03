@@ -1,3 +1,4 @@
+import 'package:bibliz/shared/build_app_bar.dart';
 import 'package:flutter/material.dart';
 
 class AdministrationPage extends StatefulWidget {
@@ -11,10 +12,8 @@ class _AdministrationPageState extends State<AdministrationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Bibliz"),),
-        body: const Text("Administration"),
+      appBar: buildAppBar(context),
+      body: const Text("Administration"),
     );
   }
 }

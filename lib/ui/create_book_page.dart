@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:bibliz/database/books/book.dart';
 import 'package:bibliz/database/books/books_query.dart';
 import 'package:bibliz/database/database.dart';
+import 'package:bibliz/shared/build_app_bar.dart';
 import 'package:bibliz/shared/build_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -157,10 +158,7 @@ class _CreateBookPageState extends State<CreateBookPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Bibliz"),
-      ),
+      appBar: buildAppBar(context),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(12.0),
