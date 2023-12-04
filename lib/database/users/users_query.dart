@@ -65,6 +65,27 @@ class UserQuery {
     }
   }
 
+  Future<void> roleUpdate(String username, String role) async {
+    QuerySnapshot query = await usersCollection
+        .where('username', isEqualTo: username)
+        .get()
+        .catchError((error) {
+      throw Exception(
+          "Une erreur est survenue lors du changement de mot de role");
+    });
+    if (query.docs.isNotEmpty) {
+      usersCollection.doc(query.docs.first.id)
+          .update({'role': role}).catchError((error) {
+        throw Exception(
+            "Une erreur est survenue lors du changement de mot de role");
+      });
+    } else {
+      throw Exception(
+          "Une erreur est survenue lors du changement de mot de role");
+    }
+  }
+
+
   Future<void> usernameUpdate(String username, String newUsername) async {
     QuerySnapshot query = await usersCollection
         .where('username', isEqualTo: username)
@@ -94,31 +115,41 @@ class UserQuery {
     }
   }
 
-  Future<Object?> getUsers() async {
-    var users = [];
-    QuerySnapshot<Object?> documents = await usersCollection.get();
+  Future<List<User>> getUsers() async {
+    List<User> users = [];
+    QuerySnapshot documents = await usersCollection.get();
     if (documents.docs.isNotEmpty) {
-      for (var document in documents.docs) {
-        users.add(User.fromMap(document.data() as Map<String, dynamic>));
+      if (documents.docs.isNotEmpty) {
+        for (var document in documents.docs) {
+          users.add(User.fromMap(document.data() as Map<String, dynamic>));
+        }
+      } else {
+        throw Exception("Aucun utilisateurs trouvé");
       }
+      return users;
     } else {
-      throw Exception("Aucun utilisateurs trouvé");
+      return users;
     }
-    return users;
   }
 
-  Future<Object?> getUserByUserName(String username) async {
-    QuerySnapshot<Object?> documents = await usersCollection
-        .where('username', isEqualTo: username)
-        .get()
-        .catchError((error) {
-      throw Exception(
-          "Une erreur est survenue lors de la récupération de l'utilisateur");
-    });
-    if (documents.docs.isNotEmpty) {
-      return User.fromMap(documents.docs[0].data() as Map<String, dynamic>);
-    } else {
-      throw Exception("Aucun utilisateur trouvé à ce nom");
+  Future<List<User>> getResearchUserNotAdmin(String username) async {
+      List<User> user = [];
+      QuerySnapshot documents;
+      if(username == ""){
+        documents = await usersCollection
+            .where('role',isNotEqualTo: 'administrator')
+            .get();
+      } else {
+        documents = await usersCollection
+            .where('username', isEqualTo: username)
+            .where('role', isNotEqualTo: 'administrator')
+            .get();
+      }
+      if(documents.docs.isNotEmpty){
+        for(var document in documents.docs){
+          user.add(User.fromMap(document.data() as Map<String, dynamic>));
+        }
+      }
+      return user;
     }
-  }
 }
