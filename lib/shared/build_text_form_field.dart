@@ -1,15 +1,21 @@
+import 'package:bibliz/shared/custom_dropdown_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-enum FieldType { text, dropdown, date }
+enum FieldType { text, dropdown, searchableDropdown, date }
 
-Widget buildTextFormField(BuildContext context,
-    TextEditingController controller, String label, IconData icon,
-    {int maxLines = 1,
-    bool isNumber = false,
-    FieldType fieldType = FieldType.text,
-    List<String>? dropdownItems,
-    DateTime? initialDate}) {
+Widget buildTextFormField(
+  BuildContext context,
+  TextEditingController controller,
+  String label,
+  IconData icon, {
+  int maxLines = 1,
+  bool isNumber = false,
+  FieldType fieldType = FieldType.text,
+  List<String>? dropdownItems,
+  DateTime? initialDate,
+  Function(String)? onItemSelected,
+}) {
   // Gestion de la saisie de texte
   if (fieldType == FieldType.text) {
     return TextFormField(
@@ -49,6 +55,15 @@ Widget buildTextFormField(BuildContext context,
       onChanged: (String? newValue) {
         controller.text = newValue ?? '';
       },
+    );
+  } else if (fieldType == FieldType.searchableDropdown &&
+      dropdownItems != null) {
+    return CustomDropdownFormField(
+      controller: controller,
+      items: dropdownItems,
+      labelText: label,
+      icon: icon,
+      onItemSelected: onItemSelected,
     );
   }
 

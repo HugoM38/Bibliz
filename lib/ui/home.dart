@@ -16,25 +16,39 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<Book> books = [];
   List<Book> filteredBooks = [];
+  List<String> searchOptions = ['Titre', 'Genre', 'Auteur'];
   bool isBooksLoaded = false;
   int crossAxisCount = 6;
   int booksCount = 100;
 
   final TextEditingController searchController = TextEditingController();
+  final TextEditingController dropdownController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _loadBooks(booksCount);
+    dropdownController.text = 'Titre'; // ou toute autre option par défaut
+    _loadBooks(booksCount);
   }
 
   void _filterBooks(String searchText) {
+    final searchLower = searchText.toLowerCase();
+    final searchType =
+        dropdownController.text; // Obtient la valeur sélectionnée du spinner
+
     setState(() {
       filteredBooks = books.where((book) {
-        final searchLower = searchText.toLowerCase();
-        return book.title.toLowerCase().contains(searchLower) ||
-            book.author.toLowerCase().contains(searchLower) ||
-            book.genre.toLowerCase().contains(searchLower);
+        switch (searchType) {
+          case 'Titre':
+            return book.title.toLowerCase().contains(searchLower);
+          case 'Auteur':
+            return book.author.toLowerCase().contains(searchLower);
+          case 'Genre':
+            return book.genre.toLowerCase().contains(searchLower);
+          default:
+            return true; // Affiche tous les livres si aucun type de recherche n'est sélectionné
+        }
       }).toList();
     });
   }
@@ -137,6 +151,8 @@ class _HomePageState extends State<HomePage> {
         title: SearchBarWidget(
           searchController: searchController,
           onSearchChanged: _filterBooks,
+          searchOptions: searchOptions,
+          dropdownController: dropdownController,
         ),
         actions: [
           Padding(
