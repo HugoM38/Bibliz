@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
+
 class CustomDropdownFormField extends StatefulWidget {
-  final TextEditingController controller;
+final TextEditingController controller;
   final List<String> items;
   final String labelText;
   final IconData icon;
@@ -17,8 +18,7 @@ class CustomDropdownFormField extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _CustomDropdownFormFieldState createState() =>
-      _CustomDropdownFormFieldState();
+  State<CustomDropdownFormField> createState() => _CustomDropdownFormFieldState();
 }
 
 class _CustomDropdownFormFieldState extends State<CustomDropdownFormField> {
@@ -31,7 +31,7 @@ class _CustomDropdownFormFieldState extends State<CustomDropdownFormField> {
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
         _overlayEntry = _createOverlayEntry();
-        Overlay.of(context)?.insert(_overlayEntry!);
+        Overlay.of(context).insert(_overlayEntry!);
       } else {
         _overlayEntry?.remove();
       }
@@ -64,7 +64,6 @@ class _CustomDropdownFormFieldState extends State<CustomDropdownFormField> {
               return ListTile(
                 title: Text(item),
                 onTap: () {
-                  print("test");
                   _overlayEntry?.remove();
                   widget.controller.text = item; // Mise à jour du contrôleur
                   widget.onItemSelected?.call(item); // Utiliser le callback
@@ -94,12 +93,12 @@ class _CustomDropdownFormFieldState extends State<CustomDropdownFormField> {
       decoration: InputDecoration(
         labelText: widget.labelText,
         prefixIcon: Icon(widget.icon),
-        suffixIcon: Icon(Icons.arrow_drop_down),
+        suffixIcon: const Icon(Icons.arrow_drop_down),
       ),
       onChanged: (value) {
         _overlayEntry?.remove();
         _overlayEntry = _createOverlayEntry();
-        Overlay.of(context)?.insert(_overlayEntry!);
+        Overlay.of(context).insert(_overlayEntry!);
       },
     );
   }

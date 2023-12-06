@@ -12,13 +12,13 @@ class BookDetailModal extends StatelessWidget {
       padding: const EdgeInsets.only(left: 50, right: 50),
       child: Dialog(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(book.title,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-              SizedBox(height: 10),
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
               _bookDetailRow('Auteur:', book.author),
               _bookDetailRow('ISBN:', book.isbn),
               _bookDetailRow('Éditeur:', book.publisher),
@@ -32,8 +32,8 @@ class BookDetailModal extends StatelessWidget {
               _bookDetailRow('Localisation:', book.location),
               book.imageUrl != null
                   ? Image.network(book.imageUrl!)
-                  : SizedBox(),
-              SizedBox(height: 20),
+                  : const SizedBox(),
+              const SizedBox(height: 20),
               ElevatedButton(
                 child: const Text('Fermer'),
                 onPressed: () => Navigator.of(context).pop(),
@@ -50,10 +50,10 @@ class BookDetailModal extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: RichText(
         text: TextSpan(
-          style: TextStyle(color: Colors.black),
+          style: const TextStyle(color: Colors.black),
           children: <TextSpan>[
             TextSpan(
-                text: label, style: TextStyle(fontWeight: FontWeight.bold)),
+                text: label, style: const TextStyle(fontWeight: FontWeight.bold)),
             TextSpan(text: ' $value'),
           ],
         ),
