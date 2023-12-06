@@ -70,21 +70,18 @@ class UserQuery {
         .where('username', isEqualTo: username)
         .get()
         .catchError((error) {
-      throw Exception(
-          "Une erreur est survenue lors du changement de mot de role");
+      throw Exception("Une erreur est survenue lors du changement de rôle");
     });
     if (query.docs.isNotEmpty) {
-      usersCollection.doc(query.docs.first.id)
+      usersCollection
+          .doc(query.docs.first.id)
           .update({'role': role}).catchError((error) {
-        throw Exception(
-            "Une erreur est survenue lors du changement de mot de role");
+        throw Exception("Une erreur est survenue lors du changement de rôle");
       });
     } else {
-      throw Exception(
-          "Une erreur est survenue lors du changement de mot de role");
+      throw Exception("Une erreur est survenue lors du changement de rôle");
     }
   }
-
 
   Future<void> usernameUpdate(String username, String newUsername) async {
     QuerySnapshot query = await usersCollection
@@ -132,24 +129,23 @@ class UserQuery {
     }
   }
 
-  Future<List<User>> getResearchUserNotAdmin(String username) async {
-      List<User> user = [];
-      QuerySnapshot documents;
-      if(username == ""){
-        documents = await usersCollection
-            .where('role',isNotEqualTo: 'administrator')
-            .get();
-      } else {
-        documents = await usersCollection
-            .where('username', isEqualTo: username)
-            .where('role', isNotEqualTo: 'administrator')
-            .get();
+  Future<List<User>> getNotAdminUsers() async {
+    List<User> users = [];
+    QuerySnapshot documents;
+
+    documents = await usersCollection
+        .where('role', isNotEqualTo: 'administrator')
+        .get().catchError((error) {
+          throw Exception("Erreur lors de la récupération de utilisateurs");
+        });
+
+    if (documents.docs.isNotEmpty) {
+      for (var document in documents.docs) {
+        users.add(User.fromMap(document.data() as Map<String, dynamic>));
       }
-      if(documents.docs.isNotEmpty){
-        for(var document in documents.docs){
-          user.add(User.fromMap(document.data() as Map<String, dynamic>));
-        }
-      }
-      return user;
+    } else {
+      throw Exception("Erreur lors de la récupération de utilisateurs");
     }
+    return users;
+  }
 }

@@ -1,155 +1,190 @@
 import 'package:bibliz/database/users/user_roles.dart';
 import 'package:bibliz/database/users/users_query.dart';
 import 'package:bibliz/shared/build_app_bar.dart';
+import 'package:bibliz/ui/widget/search_bar_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../../database/users/user.dart';
 import '../../shared/build_text_form_field.dart';
 
-GlobalKey<_AdministrationPageState> administrationPageKey = GlobalKey();
-
 class AdministrationPage extends StatefulWidget {
-  const AdministrationPage({Key? key}) : super(key: key);
-
+  const AdministrationPage({super.key});
 
   @override
-  _AdministrationPageState createState() => _AdministrationPageState();
+  State<AdministrationPage> createState() => _AdministrationPageState();
 }
 
-
 class _AdministrationPageState extends State<AdministrationPage> {
-  List<User> myObjectList = []; // Liste d'objets obtenue depuis Firebase
+  List<User> users = [];
+  List<User> filteredUsers = [];
+  bool isUsersLoaded = false;
 
   List<Widget> dynamicWidgets = []; // Liste dynamique de widgets
-  final TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   final TextEditingController _conditionController = TextEditingController();
-
 
   @override
   void initState() {
     super.initState();
-    fetchDataFromFirebase(); // Appel à la fonction pour récupérer les données depuis Firebase
+    _loadUsers();
+  }
+
+  void _filterUsers(String searchText) {
+    setState(() {
+      filteredUsers = users.where((user) {
+        final searchLower = searchText.toLowerCase();
+        return user.username.toLowerCase().contains(searchLower);
+      }).toList();
+    });
   }
 
   @override
   void dispose() {
-    _textEditingController.dispose(); // Libérer le contrôleur de texte
+    _searchController.dispose(); // Libérer le contrôleur de texte
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildAppBar(context),
-      body: Builder(
-        key: administrationPageKey,
-        builder: (context) => Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _textEditingController,
-                    decoration: const InputDecoration(
-                      labelText: 'Entrez du texte',
-                      border: OutlineInputBorder(),
-                    ),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        appBar: buildAppBar(context),
+        body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Card(
+                color: Theme.of(context).colorScheme.secondary,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: SearchBarWidget(
+                                hintText: "Rechercher un utilisateur",
+                                searchController: _searchController,
+                                onSearchChanged: _filterUsers),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Expanded(
+                        child: ListView.builder(
+                            itemCount: filteredUsers.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return buildRowTemplate(
+                                  filteredUsers[index], Key(index.toString()));
+                            }),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(width: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    debugPrint("HEHPO");
-                    replaceList(_textEditingController.text);
-                  },
-                  child: const Text('Rechercher'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: ListView.builder(
-                itemCount: dynamicWidgets.length,
-                itemBuilder: (BuildContext context, int Itemindex){
-                  return dynamicWidgets[Itemindex];
-                }
-              ),
-            ),
-          ],
-        ),
-      )),
-    );
+                ))));
   }
 
-  Future<void> fetchDataFromFirebase() async {
-    myObjectList = await UserQuery().getResearchUserNotAdmin("");
-    updateListFromFirebase();
-  }
-
-  void updateListFromFirebase() {
-    setState(() {
-      debugPrint(myObjectList.toString());
-      dynamicWidgets.clear();
-      debugPrint(myObjectList.toString());
-      for (var i = 0; i < myObjectList.length; i++) {
-        dynamicWidgets.add(
-          buildRowTemplate(myObjectList[i], UniqueKey()), // Utilisation du template de ligne avec le nom de l'objet et une clé unique
-        );
+  Future<void> _loadUsers() async {
+    if (!isUsersLoaded) {
+      try {
+        List<User> loadedUsers = await UserQuery().getNotAdminUsers();
+        setState(() {
+          users = loadedUsers;
+          filteredUsers = loadedUsers; // Initialisez également filteredBooks
+          isUsersLoaded = true;
+        });
+      } catch (error) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(error.toString()),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
-    });
-    debugPrint(myObjectList.toString());
-    if (administrationPageKey.currentState != null) {
-      administrationPageKey.currentState!.setState(() {});
     }
   }
 
   Widget buildRowTemplate(User user, Key key) {
     List<String> roleList = [];
 
-    if(user.toMap()['role'] == "member"){
-       roleList = ['member','librarian'];
+    if (user.role == UserRole.member) {
+      roleList = [UserRole.member.name, UserRole.librarian.name];
     } else {
-       roleList = ['librarian','member'];
+      roleList = [UserRole.librarian.name, UserRole.member.name];
     }
-    return Row(
-      key: key, // Ajout de la clé unique au widget Row
-      children: [
-        Text(user.username),
-        const SizedBox(width: 10),
-        Expanded(
-          child: buildTextFormField(context, _conditionController,
-            'Role', Icons.build_circle,
-            fieldType: FieldType.dropdown,
-            dropdownItems: roleList
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+                color: Theme.of(context).colorScheme.primary,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          key: key, // Ajout de la clé unique au widget Row
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                  width: 75,
+                  child: Text(
+                    user.username,
+                    overflow: TextOverflow.ellipsis,
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.secondary),
+                  )),
             ),
+            Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 8),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width *
+                        0.75,
+                child: buildTextFormField(
+                    context, _conditionController, 'Role', Icons.build_circle,
+                    fieldType: FieldType.dropdown, dropdownItems: roleList),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.secondary),
+                onPressed: () {
+                  if (_conditionController.text.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Erreur lors du changement de rôle"),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+                  UserQuery()
+                      .roleUpdate(user.username, _conditionController.text)
+                      .then((_) => {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Rôle changé avec succès"),
+                                backgroundColor: Colors.green,
+                              ),
+                            )
+                          })
+                      .catchError((error) => {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(error.toString()),
+                                backgroundColor: Colors.red,
+                              ),
+                            )
+                          });
+                },
+                child: Text(
+                  'Changer',
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.primary),
+                ),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(width: 10),
-        ElevatedButton(
-          onPressed: () {
-            UserQuery().roleUpdate(user.username, _conditionController.text);
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              '/home',
-                  (route) => false,
-            );
-          },
-          child: const Text('Changer'),
-        ),
-      ],
+      ),
     );
   }
-
-    Future<void> replaceList(String research) async {
-    myObjectList = await UserQuery().getResearchUserNotAdmin(research);
-    updateListFromFirebase();
-  }
-}
-
-class MyObject {
-  final String name;
-
-  MyObject(this.name);
 }

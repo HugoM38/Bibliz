@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 AppBar buildAppBar(BuildContext context) {
   return AppBar(
-    backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+    backgroundColor: Theme.of(context).colorScheme.secondary,
     leading: Row(
       children: [
         Padding(

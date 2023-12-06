@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 
 class SearchBarWidget extends StatelessWidget {
   final TextEditingController searchController;
+  final String hintText;
   final Function(String) onSearchChanged;
   final List<String> searchOptions;
   final TextEditingController dropdownController;
 
   const SearchBarWidget({
     Key? key,
+    required this.hintText,
     required this.searchController,
     required this.onSearchChanged,
     required this.searchOptions,
@@ -26,7 +28,7 @@ class SearchBarWidget extends StatelessWidget {
             decoration: InputDecoration(
           filled: true,
           fillColor: Theme.of(context).colorScheme.primary,
-          hintText: 'Rechercher un livre',
+          hintText: hintText,
           hintStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
           suffixIcon: const Icon(Icons.search),
           suffixIconColor: Theme.of(context).colorScheme.secondary),

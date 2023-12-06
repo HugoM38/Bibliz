@@ -41,9 +41,22 @@ Widget buildTextFormField(
   // Gestion du spinner (dropdown)
   else if (fieldType == FieldType.dropdown && dropdownItems != null) {
     return DropdownButtonFormField<String>(
+      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+      dropdownColor: Theme.of(context).colorScheme.primary,
       value: dropdownItems.isNotEmpty ? dropdownItems.first : null,
+      elevation: 8,
+      icon: Icon(Icons.arrow_drop_down,
+          color: Theme.of(context).colorScheme.secondary),
       decoration: InputDecoration(
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+              color: Theme.of(context)
+                  .colorScheme
+                  .secondary), // Couleur de l'underline quand le champ est sélectionné
+        ),
+        labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
         labelText: label,
+        prefixIconColor: Theme.of(context).colorScheme.secondary,
         prefixIcon: Icon(icon),
       ),
       items: dropdownItems.map<DropdownMenuItem<String>>((String value) {

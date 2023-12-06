@@ -149,6 +149,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         title: SearchBarWidget(
+          hintText: "Rechercher un livre",
           searchController: searchController,
           onSearchChanged: _filterBooks,
           searchOptions: searchOptions,
