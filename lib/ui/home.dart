@@ -148,14 +148,21 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        title: SearchBarWidget(
-          hintText: "Rechercher un livre",
-          searchController: searchController,
-          onSearchChanged: _filterBooks,
-          searchOptions: searchOptions,
-          dropdownController: dropdownController,
-        ),
         actions: [
+          Padding(
+            padding: EdgeInsets.only(
+                right: MediaQuery.of(context).size.width * 0.05),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.50,
+              child: SearchBarWidget(
+                hintText: "Rechercher un livre",
+                searchController: searchController,
+                onSearchChanged: _filterBooks,
+                searchOptions: searchOptions,
+                dropdownController: dropdownController,
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: ElevatedButton(

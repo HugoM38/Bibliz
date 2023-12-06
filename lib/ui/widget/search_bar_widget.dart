@@ -18,46 +18,58 @@ class SearchBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: searchController,
-            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-            decoration: InputDecoration(
-                filled: true,
-                fillColor: Theme.of(context).colorScheme.primary,
-                hintText: hintText,
-                hintStyle:
-                    TextStyle(color: Theme.of(context).colorScheme.secondary),
-                suffixIcon: const Icon(Icons.search),
-                suffixIconColor: Theme.of(context).colorScheme.secondary),
-            onChanged: onSearchChanged,
+    return Container(
+      color: Theme.of(context).colorScheme.primary,
+      child: Row(
+        children: [
+          getDropdown(context),
+          Expanded(
+            child: TextField(
+              controller: searchController,
+              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+              decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Theme.of(context).colorScheme.primary,
+                  hintText: hintText,
+                  hintStyle:
+                      TextStyle(color: Theme.of(context).colorScheme.secondary),
+                  suffixIcon: const Icon(Icons.search),
+                  suffixIconColor: Theme.of(context).colorScheme.secondary),
+              onChanged: onSearchChanged,
+            ),
           ),
-        ),
-        getDropdown()
-      ],
+        ],
+      ),
     );
   }
 
-  Widget getDropdown() {
+  Widget getDropdown(BuildContext context) {
     if (searchOptions != null && dropdownController != null) {
-      return DropdownButton<String>(
-        value: dropdownController!.text.isEmpty
-            ? searchOptions!.first
-            : dropdownController!.text,
-        onChanged: (String? newValue) {
-          if (newValue != null) {
-            dropdownController!.text = newValue;
-            onSearchChanged(searchController.text);
-          }
-        },
-        items: searchOptions!.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
+      return Padding(
+        padding: const EdgeInsets.only(left: 8),
+        child: DropdownButton<String>(
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+          dropdownColor: Theme.of(context).colorScheme.primary,
+          elevation: 8,
+          icon: Icon(Icons.arrow_drop_down,
+              color: Theme.of(context).colorScheme.secondary),
+          underline: Container(),
+          value: dropdownController!.text.isEmpty
+              ? searchOptions!.first
+              : dropdownController!.text,
+          onChanged: (String? newValue) {
+            if (newValue != null) {
+              dropdownController!.text = newValue;
+              onSearchChanged(searchController.text);
+            }
+          },
+          items: searchOptions!.map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+        ),
       );
     } else {
       return Container();
