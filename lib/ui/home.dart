@@ -1,4 +1,5 @@
 import 'package:bibliz/database/books/book_detail_modal.dart';
+import 'package:bibliz/database/books/book_manager.dart';
 import 'package:bibliz/database/users/user_roles.dart';
 import 'package:bibliz/database/books/book.dart';
 import 'package:bibliz/database/books/books_query.dart';
@@ -14,10 +15,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Book> books = [];
   List<Book> filteredBooks = [];
   List<String> searchOptions = ['Titre', 'Genre', 'Auteur'];
-  bool isBooksLoaded = false;
   int crossAxisCount = 6;
   int booksCount = 100;
 
@@ -25,19 +24,19 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController dropdownController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    dropdownController.text = 'Titre'; // ou toute autre option par défaut
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    dropdownController.text = 'Titre';
     _loadBooks(booksCount);
   }
 
   void _filterBooks(String searchText) {
     final searchLower = searchText.toLowerCase();
-    final searchType =
-        dropdownController.text; // Obtient la valeur sélectionnée du spinner
+    final searchType = dropdownController.text;
 
     setState(() {
-      filteredBooks = books.where((book) {
+      filteredBooks = BookManager().books.where((book) {
         switch (searchType) {
           case 'Titre':
             return book.title.toLowerCase().contains(searchLower);
@@ -53,28 +52,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadBooks(int count) async {
-    if (!isBooksLoaded) {
+    if (!BookManager().isBooksLoaded) {
       try {
         List<Book> loadedBooks = await BookQuery().getBooks(count);
         setState(() {
-          books = loadedBooks;
-          filteredBooks = loadedBooks; // Initialisez également filteredBooks
-          isBooksLoaded = true;
+          BookManager().books = loadedBooks;
+          BookManager().isBooksLoaded = true;
         });
       } catch (e) {
         print('Erreur lors du chargement des livres: $e');
       }
     }
-  }
-
-  Future<void> _navigateAndAddNewBook() async {
-    final newBook = await Navigator.pushNamed(context, '/create_book');
-
-    if (newBook is Book) {
-      setState(() {
-        books.add(newBook);
-      });
-    }
+    setState(() {
+      filteredBooks = BookManager().books;
+    });
   }
 
   Widget _getManagementButton() {
@@ -96,10 +87,15 @@ class _HomePageState extends State<HomePage> {
         widget = ElevatedButton(
             style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary),
-            onPressed: () {
-              Navigator.pushNamed(context, '/book_management');
+            onPressed: () async {
+              await Navigator.pushNamed(context, '/book_management');
+
+              _loadBooks(booksCount);
             },
-            child: const Text("Gestion des livres"));
+            child: Text(
+              "Gestion des livres",
+              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            ));
         break;
       case UserRole.administrator:
         widget = ElevatedButton(
@@ -187,7 +183,7 @@ class _HomePageState extends State<HomePage> {
           _getManagementButton()
         ],
       ),
-      body: books.isEmpty
+      body: BookManager().books.isEmpty
           ? Center(
               child: Text(
               'Aucun livre disponible.',
@@ -267,13 +263,6 @@ class _HomePageState extends State<HomePage> {
                     )),
               ),
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await _navigateAndAddNewBook();
-        },
-        tooltip: 'Ajouter un livre',
-        child: const Icon(Icons.add),
-      ),
       bottomNavigationBar: BottomAppBar(
         color: Theme.of(context).colorScheme.secondary,
         child: Row(

@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:bibliz/database/books/book.dart';
+import 'package:bibliz/database/books/book_manager.dart';
 import 'package:bibliz/database/books/books_query.dart';
 import 'package:bibliz/database/database.dart';
 import 'package:bibliz/shared/build_app_bar.dart';
@@ -238,7 +239,8 @@ class _CreateBookPageState extends State<CreateBookPage> {
           backgroundColor: Colors.green,
         ),
       );
-      Navigator.pop(context, newBook);
+      BookManager().books.add(newBook);
+      Navigator.pop(context);
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

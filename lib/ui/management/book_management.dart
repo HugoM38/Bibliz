@@ -14,6 +14,17 @@ class _BookManagementPageState extends State<BookManagementPage> {
     return Scaffold(
       appBar: buildAppBar(context),
       body: const Text("Book management"),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await _navigateAndAddNewBook();
+        },
+        tooltip: 'Ajouter un livre',
+        child: const Icon(Icons.add),
+      ),
     );
+  }
+
+  Future<void> _navigateAndAddNewBook() async {
+    await Navigator.pushNamed(context, '/create_book');
   }
 }
