@@ -238,7 +238,7 @@ class _CreateBookPageState extends State<CreateBookPage> {
           backgroundColor: Colors.green,
         ),
       );
-      Navigator.pop(context, newBook); // envoyer le livre sur la page Home
+      Navigator.pop(context, newBook);
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

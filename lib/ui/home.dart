@@ -27,7 +27,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _loadBooks(booksCount);
     dropdownController.text = 'Titre'; // ou toute autre option par défaut
     _loadBooks(booksCount);
   }
@@ -269,8 +268,8 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _navigateAndAddNewBook();
+        onPressed: () async {
+          await _navigateAndAddNewBook();
         },
         tooltip: 'Ajouter un livre',
         child: const Icon(Icons.add),
