@@ -1,10 +1,12 @@
+import 'package:bibliz/database/books/books_query.dart';
 import 'package:flutter/material.dart';
 import 'package:bibliz/database/books/book.dart'; // Importez votre modèle de livre
 
 class BookDetailModal extends StatelessWidget {
   final Book book;
+  final BookQuery bookQuery = BookQuery();
 
-  const BookDetailModal({Key? key, required this.book}) : super(key: key);
+  BookDetailModal({Key? key, required this.book}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +39,40 @@ class BookDetailModal extends StatelessWidget {
               ElevatedButton(
                 child: const Text('Fermer'),
                 onPressed: () => Navigator.of(context).pop(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.white,
+                  ),
+                  onPressed: book.status.toLowerCase() == 'disponible'
+                      ? () {
+                          bookQuery
+                              .changeBookStatus(book, 'non_disponible')
+                              .then((_) {
+                            // Afficher un message de succès
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Livre emprunté avec succès!'),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                            Navigator.pop(context); // Ferme le dialogue ou la carte
+                          }).catchError((error) {
+                            // Afficher un message d'erreur
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'Erreur lors de l\'emprunt du livre: $error'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          });
+                        }
+                      : null,
+                  child: const Text('Emprunter'),
+                ),
               ),
             ],
           ),

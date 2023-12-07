@@ -33,4 +33,23 @@ class BookQuery {
 
     return books;
   }
+
+   Future<void> changeBookStatus(Book book, String newStatus) async {
+    QuerySnapshot query = await booksCollection
+        .where('isbn', isEqualTo: book.isbn)
+        .get()
+        .catchError((error) {
+      throw error;
+    });
+
+    if (query.docs.isNotEmpty) {
+      var docId = query.docs.first.id;
+      await booksCollection.doc(docId).update({'status': newStatus})
+          .catchError((error) {
+        throw error;
+      });
+    } else {
+      throw ErrorDescription("Livre introuvable");
+    }
+  }
 }
