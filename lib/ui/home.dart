@@ -172,7 +172,11 @@ class _HomePageState extends State<HomePage> {
                   await SharedPrefs().removeCurrentUser();
 
                   if (context.mounted) {
-                    Navigator.pushReplacementNamed(context, '/signin');
+                    Navigator.pushNamedAndRemoveUntil(
+                      context,
+                      '/signin',
+                      (route) => false,
+                    );
                   }
                 },
                 child: Text(

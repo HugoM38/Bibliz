@@ -27,6 +27,7 @@ class SearchBarWidget extends StatelessWidget {
             child: TextField(
               controller: searchController,
               style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+              cursorColor: Theme.of(context).colorScheme.secondary,
               decoration: InputDecoration(
                   filled: true,
                   fillColor: Theme.of(context).colorScheme.primary,

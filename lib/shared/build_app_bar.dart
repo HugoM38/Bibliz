@@ -15,6 +15,9 @@ AppBar buildAppBar(BuildContext context) {
         ),
       ],
     ),
-    title: const Text("Bibliz"),
+    title: Text(
+      "Bibliz",
+      style: TextStyle(color: Theme.of(context).colorScheme.primary),
+    ),
   );
 }
