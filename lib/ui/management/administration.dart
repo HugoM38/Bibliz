@@ -19,7 +19,6 @@ class _AdministrationPageState extends State<AdministrationPage> {
   List<User> filteredUsers = [];
   bool isUsersLoaded = false;
 
-  List<Widget> dynamicWidgets = []; // Liste dynamique de widgets
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _conditionController = TextEditingController();
 

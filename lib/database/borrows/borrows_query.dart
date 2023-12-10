@@ -29,11 +29,24 @@ class BorrowsQuery {
       Borrow borrowRequest = Borrow(
           borrower: SharedPrefs().getCurrentUser()!,
           bookIsbn: book.isbn,
+          bookTitle: book.title,
           requestDate: DateTime.now(),
           state: "request");
       borrowsCollection.add(borrowRequest.toMap());
     } else {
       throw ErrorDescription("Ce livre n'est pas disponible");
     }
+  }
+
+  Future<List<Borrow>> getBorrows() async {
+    QuerySnapshot query = await borrowsCollection.get();
+    List<Borrow> borrows = [];
+
+    for (var doc in query.docs) {
+      Map<String, dynamic> borrowData = doc.data() as Map<String, dynamic>;
+      borrows.add(Borrow.fromMap(borrowData));
+    }
+
+    return borrows;
   }
 }
