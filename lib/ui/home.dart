@@ -1,4 +1,4 @@
-import 'package:bibliz/database/books/book_detail_modal.dart';
+import 'package:bibliz/ui/widget/book_detail_modal.dart';
 import 'package:bibliz/database/books/book_manager.dart';
 import 'package:bibliz/database/books/book.dart';
 import 'package:bibliz/database/books/books_query.dart';
