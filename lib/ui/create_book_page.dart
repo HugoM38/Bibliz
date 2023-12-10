@@ -128,11 +128,10 @@ class _CreateBookPageState extends State<CreateBookPage> {
   final TextEditingController _conditionController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
 
-  String? _imageExtension; // Variable pour stocker l'extension de l'image
+  String? _imageExtension;
 
   @override
   void dispose() {
-    // Dispose des contrôleurs quand la page est détruite
     _titleController.dispose();
     _authorController.dispose();
     _isbnController.dispose();
@@ -146,7 +145,6 @@ class _CreateBookPageState extends State<CreateBookPage> {
     super.dispose();
   }
 
-  // Méthode pour choisir une image
   Future<void> _pickImage() async {
     try {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -154,33 +152,36 @@ class _CreateBookPageState extends State<CreateBookPage> {
         final bytes = await pickedFile.readAsBytes();
         setState(() {
           _imageBytes = bytes;
-          _imageExtension =
-              path.extension(pickedFile.path); // Stocker l'extension
+          _imageExtension = path.extension(pickedFile.path);
         });
       }
-    } catch (e) {
-      // Gérer l'erreur
-      print("Erreur lors de la sélection de l'image: $e");
+    } catch (error) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Erreur lors de la sélection de l'image"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
   Future<String?> uploadImage(Uint8List imageBytes, String fileName) async {
     try {
-      // Ajouter l'extension au nom de fichier
+
       String fileNameWithExtension = fileName +
           (_imageExtension ??
-              '.jpg'); // Utiliser '.jpg' comme extension par défaut
+              '.jpg');
 
-      // Créer une référence au chemin où l'image sera stockée
       final ref = Database()
           .firebaseStorage
           .ref()
           .child('images/$fileNameWithExtension');
 
-      // Télécharger l'image
+
       final result = await ref.putData(imageBytes);
 
-      // Retourner l'URL de l'image téléchargée
       return await result.ref.getDownloadURL();
     } catch (e) {
       print(e);
@@ -231,7 +232,7 @@ class _CreateBookPageState extends State<CreateBookPage> {
       location: _locationController.text,
       imageUrl: imageUrl,
     );
-    // Utilisez BookQuery pour enregistrer le livre
+
     BooksQuery().addBook(newBook).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -270,7 +271,7 @@ class _CreateBookPageState extends State<CreateBookPage> {
               Center(
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width *
-                      0.45, // Ajustez la largeur ici
+                      0.45,
                   child: Card(
                     elevation: 5,
                     child: Padding(

@@ -39,7 +39,7 @@ class _AdministrationPageState extends State<AdministrationPage> {
 
   @override
   void dispose() {
-    _searchController.dispose(); // Libérer le contrôleur de texte
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -87,7 +87,7 @@ class _AdministrationPageState extends State<AdministrationPage> {
         List<User> loadedUsers = await UserQuery().getNotAdminUsers();
         setState(() {
           users = loadedUsers;
-          filteredUsers = loadedUsers; // Initialisez également filteredBooks
+          filteredUsers = loadedUsers;
           isUsersLoaded = true;
         });
       } catch (error) {
@@ -117,7 +117,7 @@ class _AdministrationPageState extends State<AdministrationPage> {
                 color: Theme.of(context).colorScheme.primary,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          key: key, // Ajout de la clé unique au widget Row
+          key: key,
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),

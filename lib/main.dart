@@ -31,7 +31,6 @@ class Bibliz extends StatelessWidget {
   const Bibliz({super.key, required this.currentUser});
   final String? currentUser;
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

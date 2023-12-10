@@ -16,7 +16,6 @@ Widget buildTextFormField(
   DateTime? initialDate,
   Function(String)? onItemSelected,
 }) {
-  // Gestion de la saisie de texte
   if (fieldType == FieldType.text) {
     return TextFormField(
       controller: controller,
@@ -38,7 +37,6 @@ Widget buildTextFormField(
     );
   }
 
-  // Gestion du spinner (dropdown)
   else if (fieldType == FieldType.dropdown && dropdownItems != null) {
     return DropdownButtonFormField<String>(
       style: TextStyle(color: Theme.of(context).colorScheme.secondary),
@@ -52,7 +50,7 @@ Widget buildTextFormField(
           borderSide: BorderSide(
               color: Theme.of(context)
                   .colorScheme
-                  .secondary), // Couleur de l'underline quand le champ est sélectionné
+                  .secondary),
         ),
         labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
         labelText: label,
@@ -80,7 +78,6 @@ Widget buildTextFormField(
     );
   }
 
-  // Gestion de la saisie de date
   else if (fieldType == FieldType.date) {
     return TextFormField(
       controller: controller,
@@ -104,6 +101,5 @@ Widget buildTextFormField(
     );
   }
 
-  // Retourne un widget vide si le type n'est pas géré
   return Container();
 }

@@ -6,7 +6,7 @@ final TextEditingController controller;
   final List<String> items;
   final String labelText;
   final IconData icon;
-  final Function(String)? onItemSelected; // Ajout d'un callback
+  final Function(String)? onItemSelected;
 
   const CustomDropdownFormField({
     Key? key,
@@ -14,7 +14,7 @@ final TextEditingController controller;
     required this.items,
     required this.labelText,
     required this.icon,
-    this.onItemSelected, // Initialisation du callback
+    this.onItemSelected,
   }) : super(key: key);
 
   @override
@@ -54,8 +54,6 @@ class _CustomDropdownFormFieldState extends State<CustomDropdownFormField> {
             padding: EdgeInsets.zero,
             shrinkWrap: true,
             children: widget.items.where((item) {
-              // Si le champ est vide, afficher tous les éléments.
-              // Sinon, filtrer en fonction de la saisie.
               return widget.controller.text.isEmpty ||
                   item
                       .toLowerCase()
@@ -65,10 +63,10 @@ class _CustomDropdownFormFieldState extends State<CustomDropdownFormField> {
                 title: Text(item),
                 onTap: () {
                   _overlayEntry?.remove();
-                  widget.controller.text = item; // Mise à jour du contrôleur
-                  widget.onItemSelected?.call(item); // Utiliser le callback
+                  widget.controller.text = item;
+                  widget.onItemSelected?.call(item);
                   _focusNode.unfocus();
-                  setState(() {}); // Rebuild pour mettre à jour l'affichage
+                  setState(() {});
                 },
               );
             }).toList(),

@@ -1,7 +1,7 @@
 import 'package:bibliz/database/books/books_query.dart';
 import 'package:bibliz/database/borrows/borrows_query.dart';
 import 'package:flutter/material.dart';
-import 'package:bibliz/database/books/book.dart'; // Importez votre modèle de livre
+import 'package:bibliz/database/books/book.dart';
 
 class BookDetailModal extends StatelessWidget {
   final Book book;
@@ -52,7 +52,6 @@ class BookDetailModal extends StatelessWidget {
                   onPressed: book.status.toLowerCase() == 'available'
                       ? () {
                           borrowsQuery.createBorrowRequest(book).then((_) {
-                            // Afficher un message de succès
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(
@@ -60,10 +59,8 @@ class BookDetailModal extends StatelessWidget {
                                 backgroundColor: Colors.green,
                               ),
                             );
-                            Navigator.pop(
-                                context); // Ferme le dialogue ou la carte
+                            Navigator.pop(context);
                           }).catchError((error) {
-                            // Afficher un message d'erreur
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(error),

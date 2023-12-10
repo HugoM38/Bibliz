@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
           case 'Genre':
             return book.genre.toLowerCase().contains(searchLower);
           default:
-            return true; // Affiche tous les livres si aucun type de recherche n'est sélectionné
+            return true;
         }
       }).toList();
     });
@@ -173,7 +173,7 @@ class _HomePageState extends State<HomePage> {
                       itemCount: filteredBooks.length,
                       itemBuilder: (context, index) {
                         final book = filteredBooks[
-                            index]; // Utilisez cette variable pour construire votre widget
+                            index];
                         return Card(
                           color: Theme.of(context).colorScheme.primary,
                           elevation: 4.0,
@@ -194,7 +194,7 @@ class _HomePageState extends State<HomePage> {
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
                                         image: NetworkImage(book.imageUrl ??
-                                            ''), // Utilisez 'book.imageUrl'
+                                            ''),
                                         fit: BoxFit.cover,
                                       ),
                                       borderRadius: BorderRadius.circular(4.0),

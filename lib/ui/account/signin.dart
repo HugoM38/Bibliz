@@ -85,7 +85,6 @@ class _SigninPageState extends State<SigninPage> {
                             backgroundColor:
                                 Theme.of(context).colorScheme.primary),
                         onPressed: () {
-                          // Ajoutez ici la logique de vérification du login
                           String username = _usernameController.text;
                           String password = sha256
                               .convert(utf8.encode(_passwordController.text))

@@ -37,7 +37,7 @@ class _BorrowManagementPageState extends State<BorrowManagementPage> {
 
   @override
   void dispose() {
-    _searchController.dispose(); // Libérer le contrôleur de texte
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -213,7 +213,7 @@ class _BorrowManagementPageState extends State<BorrowManagementPage> {
         color: Theme.of(context).colorScheme.primary,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          key: key, // Ajout de la clé unique au widget Row
+          key: key,
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),

@@ -7,7 +7,7 @@ class SharedPrefs {
   final String _userRoleKey = 'currentUserRole';
   late SharedPreferences prefs;
 
-  SharedPrefs._privateConstructor(); // Constructeur privé pour le singleton
+  SharedPrefs._privateConstructor();
 
   static final SharedPrefs _instance = SharedPrefs._privateConstructor();
 
