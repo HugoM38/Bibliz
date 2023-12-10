@@ -8,7 +8,7 @@ class ManagementProxy implements ManagementService {
   ManagementService managementService = ManagementImplService();
 
   @override
-  Widget getManagementButton(BuildContext context, loadBooks, int count, String route, String title) {
+  Widget getManagementButton(BuildContext context,  Future<void> Function(int count) loadBooks, int count, String route, String title) {
     Widget widget;
     switch (SharedPrefs().getCurrentUserRole()) {
       case UserRole.member:

@@ -4,14 +4,15 @@ import 'package:flutter/material.dart';
 class ManagementImplService implements ManagementService {
   @override
   Widget getManagementButton(
-      BuildContext context, dynamic loadBooks, int count, String route, String title) {
+      BuildContext context, Future<void> Function(int count) loadBooks, int count, String route, String title) {
     Widget widget;
 
     widget = ElevatedButton(
         style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).colorScheme.primary),
-        onPressed: () {
-          Navigator.pushNamed(context, route);
+        onPressed: () async {
+          await Navigator.pushNamed(context, route);
+          await loadBooks(count);
         },
         child: Text(
           title,

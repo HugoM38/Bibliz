@@ -13,65 +13,103 @@ class BookDetailModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 50, right: 50),
+      padding: EdgeInsets.only(
+          left: MediaQuery.of(context).size.width * 0.15,
+          right: MediaQuery.of(context).size.width * 0.15,
+          top: MediaQuery.of(context).size.height * 0.10,
+          bottom: MediaQuery.of(context).size.height * 0.10),
       child: Dialog(
+        backgroundColor: Theme.of(context).colorScheme.primary,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(book.title,
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 10),
-              _bookDetailRow('Auteur:', book.author),
-              _bookDetailRow('ISBN:', book.isbn),
-              _bookDetailRow('Éditeur:', book.publisher),
-              _bookDetailRow(
-                  'Année de publication:', book.publicationYear.toString()),
-              _bookDetailRow('Genre:', book.genre),
-              _bookDetailRow('Résumé:', book.summary),
-              _bookDetailRow('Langue:', book.language),
-              _bookDetailRow('Statut:', book.status),
-              _bookDetailRow('Condition:', book.condition),
-              _bookDetailRow('Localisation:', book.location),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Center(
+                  child: Text(book.title,
+                      style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.secondary)),
+                ),
+              ),
               book.imageUrl != null
-                  ? Image.network(book.imageUrl!)
+                  ? Center(
+                      child: Container(
+                        width: 500,
+                        height: 500,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: NetworkImage(book.imageUrl!),
+                            fit: BoxFit.cover,
+                          ),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                    )
                   : const SizedBox(),
               const SizedBox(height: 20),
-              ElevatedButton(
-                child: const Text('Fermer'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.white,
+              _bookDetailRow('Auteur:', book.author, context),
+              _bookDetailRow('ISBN:', book.isbn, context),
+              _bookDetailRow('Éditeur:', book.publisher, context),
+              _bookDetailRow('Année de publication:',
+                  book.publicationYear.toString(), context),
+              _bookDetailRow('Genre:', book.genre, context),
+              _bookDetailRow('Résumé:', book.summary, context),
+              _bookDetailRow('Langue:', book.language, context),
+              _bookDetailRow('Statut:', book.status, context),
+              _bookDetailRow('Condition:', book.condition, context),
+              _bookDetailRow('Localisation:', book.location, context),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.secondary),
+                    child: Text(
+                      'Fermer',
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary),
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
                   ),
-                  onPressed: book.status.toLowerCase() == 'available'
-                      ? () {
-                          borrowsQuery.createBorrowRequest(book).then((_) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    "Demande d'emprunt effectuée avec succès!"),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-                            Navigator.pop(context);
-                          }).catchError((error) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(error),
-                                backgroundColor: Colors.red,
-                              ),
-                            );
-                          });
-                        }
-                      : null,
-                  child: const Text('Emprunter'),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.secondary),
+                      onPressed: book.status.toLowerCase() == 'available'
+                          ? () {
+                              borrowsQuery.createBorrowRequest(book).then((_) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        "Demande d'emprunt effectuée avec succès!"),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                                Navigator.pop(context);
+                              }).catchError((error) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(error),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              });
+                            }
+                          : null,
+                      child: Text(
+                        'Emprunter',
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -80,18 +118,26 @@ class BookDetailModal extends StatelessWidget {
     );
   }
 
-  Widget _bookDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: RichText(
-        text: TextSpan(
-          style: const TextStyle(color: Colors.black),
-          children: <TextSpan>[
-            TextSpan(
-                text: label,
-                style: const TextStyle(fontWeight: FontWeight.bold)),
-            TextSpan(text: ' $value'),
-          ],
+  Widget _bookDetailRow(String label, String value, BuildContext context) {
+    return Card(
+      color: Theme.of(context).colorScheme.secondary,
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: RichText(
+          text: TextSpan(
+            style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            children: <TextSpan>[
+              TextSpan(
+                  text: label,
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold)),
+              TextSpan(
+                  text: ' $value',
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.primary)),
+            ],
+          ),
         ),
       ),
     );

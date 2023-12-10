@@ -117,7 +117,7 @@ class BorrowsQuery {
           .update({'state': 'rejected'}).then((_) async {
         await booksCollection
             .doc(queryBook.docs.first.id)
-            .update({"status": "unavailable"});
+            .update({"status": "available"});
       }).catchError((error) {
         throw Exception("Une erreur est survenue lors du rejet de l'emprunt");
       });
