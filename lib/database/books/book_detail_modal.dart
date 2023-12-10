@@ -55,7 +55,8 @@ class BookDetailModal extends StatelessWidget {
                             // Afficher un message de succès
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text("Demande d'emprunt effectuée avec succès!"),
+                                content: Text(
+                                    "Demande d'emprunt effectuée avec succès!"),
                                 backgroundColor: Colors.green,
                               ),
                             );
@@ -65,8 +66,7 @@ class BookDetailModal extends StatelessWidget {
                             // Afficher un message d'erreur
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text(
-                                    "Erreur lors de l'emprunt du livre: $error"),
+                                content: Text(error),
                                 backgroundColor: Colors.red,
                               ),
                             );

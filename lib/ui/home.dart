@@ -59,8 +59,15 @@ class _HomePageState extends State<HomePage> {
           BookManager().books = loadedBooks;
           BookManager().isBooksLoaded = true;
         });
-      } catch (e) {
-        print('Erreur lors du chargement des livres: $e');
+      } catch (error) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("$error"),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       }
     }
     setState(() {

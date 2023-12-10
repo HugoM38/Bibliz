@@ -244,7 +244,7 @@ class _CreateBookPageState extends State<CreateBookPage> {
     }).catchError((error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Erreur lors de l\'ajout du livre: $error'),
+          content: Text(error),
           backgroundColor: Colors.red,
         ),
       );

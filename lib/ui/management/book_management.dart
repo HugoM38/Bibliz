@@ -282,7 +282,16 @@ class _BookManagementPageState extends State<BookManagementPage> {
                   child: ElevatedButton(
                     onPressed: borrow.state.toLowerCase() == 'request'
                         ? () async {
-                            await BorrowsQuery().acceptBorrowRequest(borrow);
+                            await BorrowsQuery()
+                                .acceptBorrowRequest(borrow)
+                                .catchError((error) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(error),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            });
                             isBorrowsLoaded = false;
                             _loadBorrows();
                           }
@@ -297,7 +306,16 @@ class _BookManagementPageState extends State<BookManagementPage> {
                   child: ElevatedButton(
                     onPressed: borrow.state.toLowerCase() == 'request'
                         ? () async {
-                            await BorrowsQuery().rejectBorrowRequest(borrow);
+                            await BorrowsQuery()
+                                .rejectBorrowRequest(borrow)
+                                .catchError((error) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(error),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            });
                             isBorrowsLoaded = false;
                             _loadBorrows();
                           }

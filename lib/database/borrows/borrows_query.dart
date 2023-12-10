@@ -4,7 +4,6 @@ import 'package:bibliz/database/borrows/borrow.dart';
 import 'package:bibliz/database/database.dart';
 import 'package:bibliz/utils/sharedprefs.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
 class BorrowsQuery {
   CollectionReference borrowsCollection =
@@ -18,28 +17,35 @@ class BorrowsQuery {
         .where('isbn', isEqualTo: book.isbn)
         .get()
         .catchError((error) {
-      throw error;
+      throw Exception("Erreur lors de l'emprunt du livre");
     });
 
     Book queryBook =
         Book.fromMap(query.docs.first.data() as Map<String, dynamic>);
 
     if (queryBook.status == "available") {
-      BooksQuery().changeBookStatus(book, "unavailable");
+      BooksQuery().changeBookStatus(book, "unavailable").catchError((error) {
+        throw error;
+      });
       Borrow borrowRequest = Borrow(
           borrower: SharedPrefs().getCurrentUser()!,
           bookIsbn: book.isbn,
           bookTitle: book.title,
           requestDate: DateTime.now(),
           state: "request");
-      borrowsCollection.add(borrowRequest.toMap());
+      borrowsCollection.add(borrowRequest.toMap()).catchError((error) {
+        throw Exception("Erreur lors de l'emprunt du livre");
+      });
     } else {
-      throw ErrorDescription("Ce livre n'est pas disponible");
+      throw Exception("Ce livre n'est pas disponible");
     }
   }
 
   Future<List<Borrow>> getBorrows() async {
-    QuerySnapshot query = await borrowsCollection.get();
+    QuerySnapshot query = await borrowsCollection.get().catchError((error) {
+      throw Exception(
+          "Erreur lors de la récupérations des demandes d'emprunts");
+    });
     List<Borrow> borrows = [];
 
     for (var doc in query.docs) {
@@ -53,7 +59,11 @@ class BorrowsQuery {
   Future<List<Borrow>> getBorrowsByUser(String user) async {
     QuerySnapshot query = await borrowsCollection
         .where('borrower', isEqualTo: user)
-        .get();
+        .get()
+        .catchError((error) {
+      throw Exception(
+          "Erreur lors de la récupérations de vos demandes d'emprunts");
+    });
     List<Borrow> borrows = [];
 
     for (var doc in query.docs) {
@@ -70,7 +80,8 @@ class BorrowsQuery {
         .where('requestDate', isEqualTo: borrow.requestDate.toString())
         .get()
         .catchError((error) {
-      throw error;
+      throw Exception(
+          "Une erreur est survenue lors de l'acceptation de l'emprunt");
     });
 
     if (query.docs.isNotEmpty) {
@@ -90,14 +101,14 @@ class BorrowsQuery {
         .where('requestDate', isEqualTo: borrow.requestDate.toString())
         .get()
         .catchError((error) {
-      throw error;
+      throw Exception("Une erreur est survenue lors du rejet de l'emprunt");
     });
 
     QuerySnapshot queryBook = await booksCollection
         .where('isbn', isEqualTo: borrow.bookIsbn)
         .get()
         .catchError((error) {
-      throw error;
+      throw Exception("Une erreur est survenue lors du rejet de l'emprunt");
     });
 
     if (query.docs.isNotEmpty) {
@@ -119,14 +130,14 @@ class BorrowsQuery {
         .where('requestDate', isEqualTo: borrow.requestDate.toString())
         .get()
         .catchError((error) {
-      throw error;
+      throw Exception("Une erreur est survenue lors du retour de l'emprunt");
     });
 
     QuerySnapshot queryBook = await booksCollection
         .where('isbn', isEqualTo: borrow.bookIsbn)
         .get()
         .catchError((error) {
-      throw error;
+      throw Exception("Une erreur est survenue lors du retour de l'emprunt");
     });
 
     if (query.docs.isNotEmpty) {
@@ -138,7 +149,7 @@ class BorrowsQuery {
             .doc(queryBook.docs.first.id)
             .update({"status": "available"});
       }).catchError((error) {
-        throw Exception("Une erreur est survenue lors du rendu du livre");
+        throw Exception("Une erreur est survenue lors du rendu de l'emprunt");
       });
     }
   }

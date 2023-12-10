@@ -13,17 +13,22 @@ class BooksQuery {
         .where('isbn', isEqualTo: book.isbn)
         .get()
         .catchError((error) {
-      throw error;
+      throw Exception("Erreur lors de la création du livre");
     });
     if (query.docs.isEmpty) {
-      booksCollection.add(book.toMap());
+      booksCollection.add(book.toMap()).catchError((error) {
+        throw Exception("Erreur lors de la création du livre");
+      });
     } else {
-      throw ErrorDescription("Ce livre existe déjà");
+      throw Exception("Ce livre existe déjà");
     }
   }
 
   Future<List<Book>> getBooks(int count) async {
-    QuerySnapshot query = await booksCollection.limit(count).get();
+    QuerySnapshot query =
+        await booksCollection.limit(count).get().catchError((error) {
+      throw Exception("Erreur lors de la récupération des livres");
+    });
     List<Book> books = [];
 
     for (var doc in query.docs) {
@@ -39,7 +44,7 @@ class BooksQuery {
         .where('isbn', isEqualTo: book.isbn)
         .get()
         .catchError((error) {
-      throw error;
+      throw Exception("Erreur lors du changement de status du livre");
     });
 
     if (query.docs.isNotEmpty) {
@@ -47,7 +52,7 @@ class BooksQuery {
       await booksCollection
           .doc(docId)
           .update({'status': newStatus}).catchError((error) {
-        throw error;
+        throw Exception("Erreur lors du changement de status du livre");
       });
     } else {
       throw ErrorDescription("Livre introuvable");

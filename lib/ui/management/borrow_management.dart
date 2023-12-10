@@ -168,7 +168,8 @@ class _BorrowManagementPageState extends State<BorrowManagementPage> {
   Future<void> _loadBorrows() async {
     if (!isBorrowsLoaded) {
       try {
-        List<Borrow> loadedBorrows = await BorrowsQuery().getBorrowsByUser(SharedPrefs().getCurrentUser()!);
+        List<Borrow> loadedBorrows = await BorrowsQuery()
+            .getBorrowsByUser(SharedPrefs().getCurrentUser()!);
         setState(() {
           borrows = loadedBorrows;
           filteredBorrows = loadedBorrows;
@@ -278,7 +279,16 @@ class _BorrowManagementPageState extends State<BorrowManagementPage> {
                       backgroundColor: Theme.of(context).colorScheme.secondary),
                   onPressed: borrow.state.toLowerCase() == 'accepted'
                       ? () async {
-                          await BorrowsQuery().returnBook(borrow);
+                          await BorrowsQuery()
+                              .returnBook(borrow)
+                              .catchError((error) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(error),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          });
                           isBorrowsLoaded = false;
                           _loadBorrows();
                         }
