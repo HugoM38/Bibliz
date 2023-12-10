@@ -169,16 +169,12 @@ class _CreateBookPageState extends State<CreateBookPage> {
 
   Future<String?> uploadImage(Uint8List imageBytes, String fileName) async {
     try {
-
-      String fileNameWithExtension = fileName +
-          (_imageExtension ??
-              '.jpg');
+      String fileNameWithExtension = fileName + (_imageExtension ?? '.jpg');
 
       final ref = Database()
           .firebaseStorage
           .ref()
           .child('images/$fileNameWithExtension');
-
 
       final result = await ref.putData(imageBytes);
 
@@ -255,24 +251,28 @@ class _CreateBookPageState extends State<CreateBookPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
       appBar: buildAppBar(context),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0),
                 child: Text(
                   "Créer un nouveau livre",
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.secondary),
                 ),
               ),
               Center(
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width *
-                      0.45,
+                  width: MediaQuery.of(context).size.width * 0.45,
                   child: Card(
+                    color: Theme.of(context).colorScheme.secondary,
                     elevation: 5,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -301,10 +301,9 @@ class _CreateBookPageState extends State<CreateBookPage> {
                             _languageController,
                             'Langue',
                             Icons.language,
-                            fieldType: FieldType.searchableDropdown,
+                            fieldType: FieldType.dropdown,
                             dropdownItems: languageOptions,
                             onItemSelected: (selectedValue) {
-                              print(selectedValue);
                               setState(() {
                                 _languageController.text = selectedValue;
                               });
@@ -322,7 +321,7 @@ class _CreateBookPageState extends State<CreateBookPage> {
                                 height: 300,
                                 width: 300,
                                 decoration: BoxDecoration(
-                                  color: Colors.grey[200],
+                                  color: Theme.of(context).colorScheme.primary,
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: _imageBytes != null
@@ -333,13 +332,27 @@ class _CreateBookPageState extends State<CreateBookPage> {
                                           fit: BoxFit.cover,
                                         ),
                                       )
-                                    : const Icon(Icons.add_a_photo, size: 50),
+                                    : Icon(
+                                        Icons.add_a_photo,
+                                        size: 50,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                      ),
                               ),
                             ),
                           ),
                           ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.primary),
                             onPressed: _createBook,
-                            child: const Text('Créer le livre'),
+                            child: Text(
+                              'Créer le livre',
+                              style: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
+                            ),
                           ),
                         ],
                       ),

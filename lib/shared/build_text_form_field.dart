@@ -18,8 +18,14 @@ Widget buildTextFormField(
 }) {
   if (fieldType == FieldType.text) {
     return TextFormField(
+      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+      cursorColor: Theme.of(context).colorScheme.secondary,
       controller: controller,
       decoration: InputDecoration(
+        prefixIconColor: Theme.of(context).colorScheme.secondary,
+        filled: true,
+        fillColor: Theme.of(context).colorScheme.primary,
+        labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
         labelText: label,
         prefixIcon: Icon(icon),
       ),
@@ -35,9 +41,7 @@ Widget buildTextFormField(
         return null;
       },
     );
-  }
-
-  else if (fieldType == FieldType.dropdown && dropdownItems != null) {
+  } else if (fieldType == FieldType.dropdown && dropdownItems != null) {
     return DropdownButtonFormField<String>(
       style: TextStyle(color: Theme.of(context).colorScheme.secondary),
       dropdownColor: Theme.of(context).colorScheme.primary,
@@ -46,15 +50,15 @@ Widget buildTextFormField(
       icon: Icon(Icons.arrow_drop_down,
           color: Theme.of(context).colorScheme.secondary),
       decoration: InputDecoration(
+        prefixIconColor: Theme.of(context).colorScheme.secondary,
+        filled: true,
+        fillColor: Theme.of(context).colorScheme.primary,
         focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-              color: Theme.of(context)
-                  .colorScheme
-                  .secondary),
+          borderSide:
+              BorderSide(color: Theme.of(context).colorScheme.secondary),
         ),
         labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
         labelText: label,
-        prefixIconColor: Theme.of(context).colorScheme.secondary,
         prefixIcon: Icon(icon),
       ),
       items: dropdownItems.map<DropdownMenuItem<String>>((String value) {
@@ -76,14 +80,17 @@ Widget buildTextFormField(
       icon: icon,
       onItemSelected: onItemSelected,
     );
-  }
-
-  else if (fieldType == FieldType.date) {
+  } else if (fieldType == FieldType.date) {
     return TextFormField(
       controller: controller,
+      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+      cursorColor: Theme.of(context).colorScheme.secondary,
       decoration: InputDecoration(
+        filled: true,
+        fillColor: Theme.of(context).colorScheme.primary,
+        labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
         labelText: label,
-        prefixIcon: Icon(icon),
+        prefixIcon: Icon(icon, color: Theme.of(context).colorScheme.secondary,),
       ),
       readOnly: true,
       onTap: () async {

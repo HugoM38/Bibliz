@@ -162,11 +162,15 @@ class _BookManagementPageState extends State<BookManagementPage> {
                 ),
               ))),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.primary,
         onPressed: () async {
           await _navigateAndAddNewBook();
         },
         tooltip: 'Ajouter un livre',
-        child: const Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Theme.of(context).colorScheme.secondary,
+        ),
       ),
     );
   }
