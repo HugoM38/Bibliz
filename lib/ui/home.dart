@@ -139,10 +139,11 @@ class _HomePageState extends State<HomePage> {
                     backgroundColor: Theme.of(context).colorScheme.primary),
                 onPressed: () async {
                   if (context.mounted) {
-                    Navigator.pushNamed(
+                    await Navigator.pushNamed(
                       context,
                       '/borrows',
                     );
+                    _loadBooks(booksCount);
                   }
                 },
                 child: Text(
@@ -172,19 +173,19 @@ class _HomePageState extends State<HomePage> {
                       ),
                       itemCount: filteredBooks.length,
                       itemBuilder: (context, index) {
-                        final book = filteredBooks[
-                            index];
+                        final book = filteredBooks[index];
                         return Card(
                           color: Theme.of(context).colorScheme.primary,
                           elevation: 4.0,
                           child: InkWell(
-                            onTap: () {
-                              showDialog(
+                            onTap: () async {
+                              await showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
                                   return BookDetailModal(book: book);
                                 },
                               );
+                              _loadBooks(booksCount);
                             },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -193,8 +194,8 @@ class _HomePageState extends State<HomePage> {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
-                                        image: NetworkImage(book.imageUrl ??
-                                            ''),
+                                        image:
+                                            NetworkImage(book.imageUrl ?? ''),
                                         fit: BoxFit.cover,
                                       ),
                                       borderRadius: BorderRadius.circular(4.0),
