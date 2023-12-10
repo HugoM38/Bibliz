@@ -180,7 +180,26 @@ class _HomePageState extends State<HomePage> {
                       TextStyle(color: Theme.of(context).colorScheme.secondary),
                 )),
           ),
-          _getManagementButton()
+          _getManagementButton(),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+            child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary),
+                onPressed: () async {
+                  if (context.mounted) {
+                    Navigator.pushNamed(
+                      context,
+                      '/borrows',
+                    );
+                  }
+                },
+                child: Text(
+                  "Mes emprunts",
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.secondary),
+                )),
+          ),
         ],
       ),
       body: BookManager().books.isEmpty

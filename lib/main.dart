@@ -5,6 +5,7 @@ import 'package:bibliz/ui/create_book_page.dart';
 import 'package:bibliz/ui/home.dart';
 import 'package:bibliz/ui/management/administration.dart';
 import 'package:bibliz/ui/management/book_management.dart';
+import 'package:bibliz/ui/management/borrow_management.dart';
 import 'package:bibliz/ui/management/edit_profil.dart';
 import 'package:bibliz/utils/sharedprefs.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -51,6 +52,7 @@ class Bibliz extends StatelessWidget {
         '/edit_profile': (context) => const EditProfilePage(),
         '/administration': (context) => const AdministrationPage(),
         '/book_management': (context) => const BookManagementPage(),
+        '/borrows': (context) => const BorrowManagementPage(),
         '/create_book': (context) => const CreateBookPage(),
       },
     );
