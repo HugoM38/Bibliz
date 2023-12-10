@@ -16,14 +16,24 @@ class Borrow {
   });
 
   factory Borrow.fromMap(Map<String, dynamic> map) {
-    return Borrow(
-      borrower: map['borrower'],
-      bookIsbn: map['bookIsbn'],
-      bookTitle: map['bookTitle'],
-      requestDate: DateTime.parse(map['requestDate'] as String),
-      state: map['state'],
-      returnDate: map['returnDate'],
-    );
+    if (map['returnDate'] == null) {
+      return Borrow(
+        borrower: map['borrower'],
+        bookIsbn: map['bookIsbn'],
+        bookTitle: map['bookTitle'],
+        requestDate: DateTime.parse(map['requestDate'] as String),
+        state: map['state'],
+      );
+    } else {
+      return Borrow(
+        borrower: map['borrower'],
+        bookIsbn: map['bookIsbn'],
+        bookTitle: map['bookTitle'],
+        requestDate: DateTime.parse(map['requestDate'] as String),
+        state: map['state'],
+        returnDate: DateTime.parse(map['returnDate'] as String),
+      );
+    }
   }
 
   Map<String, dynamic> toMap() {

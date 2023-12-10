@@ -177,8 +177,7 @@ class _BookManagementPageState extends State<BookManagementPage> {
         List<Borrow> loadedBorrows = await BorrowsQuery().getBorrows();
         setState(() {
           borrows = loadedBorrows;
-          filteredBorrows =
-              loadedBorrows; // Initialisez également filteredBooks
+          filteredBorrows = loadedBorrows;
           isBorrowsLoaded = true;
         });
       } catch (error) {
@@ -281,7 +280,13 @@ class _BookManagementPageState extends State<BookManagementPage> {
                 Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: borrow.state.toLowerCase() == 'request'
+                        ? () async {
+                            await BorrowsQuery().acceptBorrowRequest(borrow);
+                            isBorrowsLoaded = false;
+                            _loadBorrows();
+                          }
+                        : null,
                     style:
                         ElevatedButton.styleFrom(backgroundColor: Colors.green),
                     child: const Icon(Icons.check),
@@ -290,7 +295,13 @@ class _BookManagementPageState extends State<BookManagementPage> {
                 Padding(
                   padding: const EdgeInsets.all(4.0),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: borrow.state.toLowerCase() == 'request'
+                        ? () async {
+                            await BorrowsQuery().rejectBorrowRequest(borrow);
+                            isBorrowsLoaded = false;
+                            _loadBorrows();
+                          }
+                        : null,
                     style:
                         ElevatedButton.styleFrom(backgroundColor: Colors.red),
                     child: const Icon(Icons.close),

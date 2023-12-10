@@ -49,4 +49,53 @@ class BorrowsQuery {
 
     return borrows;
   }
+
+  Future<void> acceptBorrowRequest(Borrow borrow) async {
+    QuerySnapshot query = await borrowsCollection
+        .where('bookIsbn', isEqualTo: borrow.bookIsbn)
+        .where('requestDate', isEqualTo: borrow.requestDate.toString())
+        .get()
+        .catchError((error) {
+      throw error;
+    });
+
+    if (query.docs.isNotEmpty) {
+      borrowsCollection.doc(query.docs.first.id).update({
+        'returnDate': DateTime.now().add(const Duration(days: 14)).toString(),
+        'state': 'accepted'
+      }).catchError((error) {
+        throw Exception(
+            "Une erreur est survenue lors de l'acceptation de l'emprunt");
+      });
+    }
+  }
+
+  Future<void> rejectBorrowRequest(Borrow borrow) async {
+    QuerySnapshot query = await borrowsCollection
+        .where('bookIsbn', isEqualTo: borrow.bookIsbn)
+        .where('requestDate', isEqualTo: borrow.requestDate.toString())
+        .get()
+        .catchError((error) {
+      throw error;
+    });
+
+    QuerySnapshot queryBook = await booksCollection
+        .where('isbn', isEqualTo: borrow.bookIsbn)
+        .get()
+        .catchError((error) {
+      throw error;
+    });
+
+    if (query.docs.isNotEmpty) {
+      borrowsCollection
+          .doc(query.docs.first.id)
+          .update({'state': 'rejected'}).then((_) async {
+        await booksCollection
+            .doc(queryBook.docs.first.id)
+            .update({"status": "unavailable"});
+      }).catchError((error) {
+        throw Exception("Une erreur est survenue lors du rejet de l'emprunt");
+      });
+    }
+  }
 }
