@@ -1,10 +1,12 @@
 import 'package:bibliz/database/books/books_query.dart';
+import 'package:bibliz/database/borrows/borrows_query.dart';
 import 'package:flutter/material.dart';
 import 'package:bibliz/database/books/book.dart'; // Importez votre modèle de livre
 
 class BookDetailModal extends StatelessWidget {
   final Book book;
-  final BookQuery bookQuery = BookQuery();
+  final BooksQuery bookQuery = BooksQuery();
+  final BorrowsQuery borrowsQuery = BorrowsQuery();
 
   BookDetailModal({Key? key, required this.book}) : super(key: key);
 
@@ -19,7 +21,8 @@ class BookDetailModal extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(book.title,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold)),
               const SizedBox(height: 10),
               _bookDetailRow('Auteur:', book.author),
               _bookDetailRow('ISBN:', book.isbn),
@@ -46,25 +49,24 @@ class BookDetailModal extends StatelessWidget {
                   style: TextButton.styleFrom(
                     backgroundColor: Colors.white,
                   ),
-                  onPressed: book.status.toLowerCase() == 'disponible'
+                  onPressed: book.status.toLowerCase() == 'available'
                       ? () {
-                          bookQuery
-                              .changeBookStatus(book, 'non_disponible')
-                              .then((_) {
+                          borrowsQuery.createBorrowRequest(book).then((_) {
                             // Afficher un message de succès
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Livre emprunté avec succès!'),
+                                content: Text("Demande d'emprunt effectuée avec succès!"),
                                 backgroundColor: Colors.green,
                               ),
                             );
-                            Navigator.pop(context); // Ferme le dialogue ou la carte
+                            Navigator.pop(
+                                context); // Ferme le dialogue ou la carte
                           }).catchError((error) {
                             // Afficher un message d'erreur
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                    'Erreur lors de l\'emprunt du livre: $error'),
+                                    "Erreur lors de l'emprunt du livre: $error"),
                                 backgroundColor: Colors.red,
                               ),
                             );
@@ -89,7 +91,8 @@ class BookDetailModal extends StatelessWidget {
           style: const TextStyle(color: Colors.black),
           children: <TextSpan>[
             TextSpan(
-                text: label, style: const TextStyle(fontWeight: FontWeight.bold)),
+                text: label,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
             TextSpan(text: ' $value'),
           ],
         ),

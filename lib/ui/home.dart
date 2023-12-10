@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _loadBooks(int count) async {
     if (!BookManager().isBooksLoaded) {
       try {
-        List<Book> loadedBooks = await BookQuery().getBooks(count);
+        List<Book> loadedBooks = await BooksQuery().getBooks(count);
         setState(() {
           BookManager().books = loadedBooks;
           BookManager().isBooksLoaded = true;

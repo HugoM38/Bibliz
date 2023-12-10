@@ -6,7 +6,6 @@ import 'package:bibliz/utils/sharedprefs.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 
-import '../../database/books/books_query.dart';
 
 class SigninPage extends StatefulWidget {
   const SigninPage({super.key});
@@ -18,8 +17,6 @@ class SigninPage extends StatefulWidget {
 class _SigninPageState extends State<SigninPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  final BookQuery bookQuery = BookQuery();
 
   @override
   Widget build(BuildContext context) {

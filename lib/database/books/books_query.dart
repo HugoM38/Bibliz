@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'book.dart';
 
-class BookQuery {
+class BooksQuery {
   CollectionReference booksCollection =
       Database().firestore.collection('Books');
 
@@ -34,7 +34,7 @@ class BookQuery {
     return books;
   }
 
-   Future<void> changeBookStatus(Book book, String newStatus) async {
+  Future<void> changeBookStatus(Book book, String newStatus) async {
     QuerySnapshot query = await booksCollection
         .where('isbn', isEqualTo: book.isbn)
         .get()
@@ -44,8 +44,9 @@ class BookQuery {
 
     if (query.docs.isNotEmpty) {
       var docId = query.docs.first.id;
-      await booksCollection.doc(docId).update({'status': newStatus})
-          .catchError((error) {
+      await booksCollection
+          .doc(docId)
+          .update({'status': newStatus}).catchError((error) {
         throw error;
       });
     } else {

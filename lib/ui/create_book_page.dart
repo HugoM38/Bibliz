@@ -226,13 +226,13 @@ class _CreateBookPageState extends State<CreateBookPage> {
       genre: _genreController.text,
       summary: _summaryController.text,
       language: _languageController.text,
-      status: 'Disponible',
+      status: 'available',
       condition: _conditionController.text,
       location: _locationController.text,
       imageUrl: imageUrl,
     );
     // Utilisez BookQuery pour enregistrer le livre
-    BookQuery().addBook(newBook).then((_) {
+    BooksQuery().addBook(newBook).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Livre ajouté avec succès!'),
