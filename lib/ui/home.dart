@@ -1,8 +1,8 @@
 import 'package:bibliz/database/books/book_detail_modal.dart';
 import 'package:bibliz/database/books/book_manager.dart';
-import 'package:bibliz/database/users/user_roles.dart';
 import 'package:bibliz/database/books/book.dart';
 import 'package:bibliz/database/books/books_query.dart';
+import 'package:bibliz/ui/management_proxy/management_proxy.dart';
 import 'package:bibliz/ui/widget/search_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:bibliz/utils/sharedprefs.dart';
@@ -75,63 +75,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Widget _getManagementButton() {
-    Widget widget;
-    switch (SharedPrefs().getCurrentUserRole()) {
-      case UserRole.member:
-        widget = ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary),
-            onPressed: () {
-              Navigator.pushNamed(context, '/edit_profile');
-            },
-            child: Text(
-              "Gestion du profil",
-              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-            ));
-        break;
-      case UserRole.librarian:
-        widget = ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary),
-            onPressed: () async {
-              await Navigator.pushNamed(context, '/book_management');
-
-              _loadBooks(booksCount);
-            },
-            child: Text(
-              "Gestion des livres",
-              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-            ));
-        break;
-      case UserRole.administrator:
-        widget = ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary),
-            onPressed: () {
-              Navigator.pushNamed(context, '/administration');
-            },
-            child: Text(
-              "Administration",
-              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-            ));
-        break;
-      default:
-        widget = ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary),
-            onPressed: () {
-              Navigator.pushNamed(context, '/edit_profil');
-            },
-            child: Text(
-              "Modifier mon profil",
-              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-            ));
-    }
-
-    return widget;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -187,7 +130,8 @@ class _HomePageState extends State<HomePage> {
                       TextStyle(color: Theme.of(context).colorScheme.secondary),
                 )),
           ),
-          _getManagementButton(),
+          ManagementProxy()
+              .getManagementButton(context, _loadBooks, booksCount, "", ""),
           Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8.0),
             child: ElevatedButton(
