@@ -4,11 +4,22 @@ import 'package:bibliz/ui/management_proxy/management_service.dart';
 import 'package:bibliz/utils/sharedprefs.dart';
 import 'package:flutter/material.dart';
 
+/*
+    Utilisation du designe pattern Proxy
+*/
 class ManagementProxy implements ManagementService {
   ManagementService managementService = ManagementImplService();
-
+  /*
+    Fonction permettant de revnoyer un bouton selon le rôle de l'utilisateur,
+    ce qui permet de réguler les accès aux différentes partie de Bibliz.
+  */
   @override
-  Widget getManagementButton(BuildContext context,  Future<void> Function(int count) loadBooks, int count, String route, String title) {
+  Widget getManagementButton(
+      BuildContext context,
+      Future<void> Function(int count) loadBooks,
+      int count,
+      String route,
+      String title) {
     Widget widget;
     switch (SharedPrefs().getCurrentUserRole()) {
       case UserRole.member:

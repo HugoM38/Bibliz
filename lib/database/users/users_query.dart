@@ -10,6 +10,9 @@ class UserQuery {
   CollectionReference usersCollection =
       Database().firestore.collection('Users');
 
+  /*
+    Fonction permettant d'ajouter un utilisateur à la base de données si il n'existe pas
+  */
   Future<void> signup(User user) async {
     QuerySnapshot query = await usersCollection
         .where('username', isEqualTo: user.username)
@@ -24,6 +27,9 @@ class UserQuery {
     }
   }
 
+  /*
+    Fonction permettant de se connecter
+  */
   Future<User?> signin(String username, String password) async {
     QuerySnapshot query = await usersCollection
         .where('username', isEqualTo: username)
@@ -38,6 +44,9 @@ class UserQuery {
     }
   }
 
+  /*
+    Fonction permettant de mettre à jour un mot de passe
+  */
   Future<void> passwordUpdate(
       String username, String oldPassword, String newPassword) async {
     String oldPasswordHash =
@@ -65,6 +74,9 @@ class UserQuery {
     }
   }
 
+  /*
+    Fonction permettant de mettre à jour le rôle d'un utilisateur
+  */
   Future<void> roleUpdate(String username, String role) async {
     QuerySnapshot query = await usersCollection
         .where('username', isEqualTo: username)
@@ -83,6 +95,9 @@ class UserQuery {
     }
   }
 
+  /*
+    Fonction permettant de mettre à jour le nom d'utilisateur d'un utilisateur
+  */
   Future<void> usernameUpdate(String username, String newUsername) async {
     QuerySnapshot query = await usersCollection
         .where('username', isEqualTo: username)
@@ -112,6 +127,9 @@ class UserQuery {
     }
   }
 
+  /*
+    Fonction permettant de récupérer la liste des utilisateurs
+  */
   Future<List<User>> getUsers() async {
     List<User> users = [];
     QuerySnapshot documents = await usersCollection.get();
@@ -129,6 +147,9 @@ class UserQuery {
     }
   }
 
+  /*
+    Fonction permettant de récupérer la liste des utilisateurs non admin
+  */
   Future<List<User>> getNotAdminUsers() async {
     List<User> users = [];
     QuerySnapshot documents;

@@ -24,7 +24,9 @@ class _BookManagementPageState extends State<BookManagementPage> {
     super.initState();
     _loadBorrows();
   }
-
+  /*
+    Fonction permettant de mettre a jour la liste des emprunts a chaque modification dans la barre de recherche.
+  */
   void _filterBorrows(String searchText) {
     setState(() {
       filteredBorrows = borrows.where((borrow) {
@@ -175,6 +177,9 @@ class _BookManagementPageState extends State<BookManagementPage> {
     );
   }
 
+  /*
+    Fonction permettant de charger la liste des emprunts et de la mettre à jour avec les données de la base de données.
+  */
   Future<void> _loadBorrows() async {
     if (!isBorrowsLoaded) {
       try {
@@ -196,7 +201,10 @@ class _BookManagementPageState extends State<BookManagementPage> {
       }
     }
   }
-
+  
+  /*
+    Fonction permettant de générer une ligne avec les détails pour chaque emprunts
+  */
   Widget buildRowTemplate(Borrow borrow, Key key) {
     String date;
     String state;

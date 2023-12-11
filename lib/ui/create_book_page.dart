@@ -145,6 +145,9 @@ class _CreateBookPageState extends State<CreateBookPage> {
     super.dispose();
   }
 
+  /*
+    Fonction permettant de sélectionner une image
+  */
   Future<void> _pickImage() async {
     try {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -167,6 +170,9 @@ class _CreateBookPageState extends State<CreateBookPage> {
     }
   }
 
+  /*
+    Fonction permettant d'uploader une image
+  */
   Future<String?> uploadImage(Uint8List imageBytes, String fileName) async {
     try {
       String fileNameWithExtension = fileName + (_imageExtension ?? '.jpg');
@@ -179,16 +185,27 @@ class _CreateBookPageState extends State<CreateBookPage> {
       final result = await ref.putData(imageBytes);
 
       return await result.ref.getDownloadURL();
-    } catch (e) {
-      print(e);
-      return null;
+    } catch (error) {
+      throw Exception("Erreur lors de l'envoi de l'image");
     }
   }
 
+
+  /*
+    Fonction permettant de créer un livre
+  */
   void _createBook() async {
     String? imageUrl;
     if (_imageBytes != null) {
-      imageUrl = await uploadImage(_imageBytes!, _isbnController.text);
+      imageUrl = await uploadImage(_imageBytes!, _isbnController.text)
+          .catchError((error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error),
+            backgroundColor: Colors.red,
+          ),
+        );
+      });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

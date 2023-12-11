@@ -31,6 +31,10 @@ class _HomePageState extends State<HomePage> {
     _loadBooks(booksCount);
   }
 
+  /*
+    Fonction permettant de mettre à jour les livres affichés sur l'accueil à 
+    chaque modification dans la barre de recherche.
+  */
   void _filterBooks(String searchText) {
     final searchLower = searchText.toLowerCase();
     final searchType = dropdownController.text;
@@ -51,6 +55,10 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  /*
+    Fonction permettant de charger les livres à l'initialisation de la page et de mettre à jour les livres
+    lorsqu'on met à jour les livres du book manager.
+  */
   Future<void> _loadBooks(int count) async {
     if (!BookManager().isBooksLoaded) {
       try {

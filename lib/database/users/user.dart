@@ -10,6 +10,9 @@ class User {
     required this.role,
   });
 
+  /*
+    Fonction permettant de récupérer un User à partir d'une map
+  */
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
       username: map['username'],
@@ -18,6 +21,9 @@ class User {
     );
   }
 
+  /*
+    Fonction permettant de récupérer un rôle à partir d'une String
+  */
   static UserRole parseUserRole(String roleString) {
     switch (roleString.toLowerCase()) {
       case 'member':
@@ -31,6 +37,9 @@ class User {
     }
   }
 
+  /*
+    Fonction permettant de créer une Map à partir d'un objet User
+  */
   Map<String, dynamic> toMap() {
     return {
       'username': username,

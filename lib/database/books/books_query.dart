@@ -8,6 +8,9 @@ class BooksQuery {
   CollectionReference booksCollection =
       Database().firestore.collection('Books');
 
+  /*
+    Fonction permettant de créer un livre si il n'existe déjà pas
+  */
   Future<void> addBook(Book book) async {
     QuerySnapshot query = await booksCollection
         .where('isbn', isEqualTo: book.isbn)
@@ -24,6 +27,9 @@ class BooksQuery {
     }
   }
 
+  /*
+    Fonction permettant de récupérer la liste des livres
+  */
   Future<List<Book>> getBooks(int count) async {
     QuerySnapshot query =
         await booksCollection.limit(count).get().catchError((error) {
@@ -39,6 +45,9 @@ class BooksQuery {
     return books;
   }
 
+  /*
+    Fonction permettant de mettre à jour le status d'un livre
+  */
   Future<void> changeBookStatus(Book book, String newStatus) async {
     QuerySnapshot query = await booksCollection
         .where('isbn', isEqualTo: book.isbn)

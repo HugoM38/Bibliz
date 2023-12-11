@@ -17,10 +17,9 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  //Initialisation de SharedPrefs afin de stocker et récupérer l'utilisateur connecté
   await SharedPrefs().initSharedPrefs();
   String? currentUser = SharedPrefs().getCurrentUser();
-
-  print("Logged as $currentUser");
 
   runApp(Bibliz(
     currentUser: currentUser,
@@ -70,6 +69,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        //On vérifie si l'utilisateur est connecté afin de le rediriger
         body:
             widget.currentUser != null ? const HomePage() : const SigninPage());
   }

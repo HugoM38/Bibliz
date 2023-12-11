@@ -1,8 +1,11 @@
-import 'package:bibliz/ui/widget/custom_dropdown_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-enum FieldType { text, dropdown, searchableDropdown, date }
+enum FieldType { text, dropdown, date }
+
+/*
+    Fonction permettant de générer un FormField selon un type donné
+*/
 
 Widget buildTextFormField(
   BuildContext context,
@@ -71,15 +74,6 @@ Widget buildTextFormField(
         controller.text = newValue ?? '';
       },
     );
-  } else if (fieldType == FieldType.searchableDropdown &&
-      dropdownItems != null) {
-    return CustomDropdownFormField(
-      controller: controller,
-      items: dropdownItems,
-      labelText: label,
-      icon: icon,
-      onItemSelected: onItemSelected,
-    );
   } else if (fieldType == FieldType.date) {
     return TextFormField(
       controller: controller,
@@ -90,7 +84,10 @@ Widget buildTextFormField(
         fillColor: Theme.of(context).colorScheme.primary,
         labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
         labelText: label,
-        prefixIcon: Icon(icon, color: Theme.of(context).colorScheme.secondary,),
+        prefixIcon: Icon(
+          icon,
+          color: Theme.of(context).colorScheme.secondary,
+        ),
       ),
       readOnly: true,
       onTap: () async {

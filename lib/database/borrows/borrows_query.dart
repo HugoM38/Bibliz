@@ -13,6 +13,9 @@ class BorrowsQuery {
   CollectionReference booksCollection =
       Database().firestore.collection('Books');
 
+/*
+  Fonction permettant la création d'une demande d'emprunt si un livre est disponible
+*/
   Future<void> createBorrowRequest(Book book) async {
     QuerySnapshot query = await booksCollection
         .where('isbn', isEqualTo: book.isbn)
@@ -45,6 +48,9 @@ class BorrowsQuery {
     }
   }
 
+/*
+  Fonction permettant de récupérer la liste des emprunts
+*/
   Future<List<Borrow>> getBorrows() async {
     QuerySnapshot query = await borrowsCollection.get().catchError((error) {
       throw Exception(
@@ -59,7 +65,9 @@ class BorrowsQuery {
 
     return borrows;
   }
-
+/*
+  Fonction permettant de récupérer la liste des emprunts par utilisateur
+*/
   Future<List<Borrow>> getBorrowsByUser(String user) async {
     QuerySnapshot query = await borrowsCollection
         .where('borrower', isEqualTo: user)
@@ -78,6 +86,9 @@ class BorrowsQuery {
     return borrows;
   }
 
+/*
+  Fonction permettant d'accepter une demande d'emprunt
+*/
   Future<void> acceptBorrowRequest(Borrow borrow) async {
     QuerySnapshot query = await borrowsCollection
         .where('bookIsbn', isEqualTo: borrow.bookIsbn)
@@ -98,7 +109,9 @@ class BorrowsQuery {
       });
     }
   }
-
+/*
+  Fonction permettant de refuser une demande d'emprunt
+*/
   Future<void> rejectBorrowRequest(Borrow borrow) async {
     QuerySnapshot query = await borrowsCollection
         .where('bookIsbn', isEqualTo: borrow.bookIsbn)
@@ -134,6 +147,9 @@ class BorrowsQuery {
     }
   }
 
+/*
+  Fonction permettant de rendre un livre
+*/
   Future<void> returnBook(Borrow borrow) async {
     QuerySnapshot query = await borrowsCollection
         .where('bookIsbn', isEqualTo: borrow.bookIsbn)

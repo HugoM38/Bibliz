@@ -5,6 +5,9 @@ import 'package:bibliz/database/users/user.dart';
 import 'package:bibliz/database/users/user_factory.dart';
 import 'package:bibliz/database/users/user_roles.dart';
 
+/*
+    Factory (Design pattern) permettant la création d'utilisateur selon leurs rôles
+*/
 class LibraryUserFactory implements UserFactory {
   @override
   User createUser(String username, String password, UserRole role) {

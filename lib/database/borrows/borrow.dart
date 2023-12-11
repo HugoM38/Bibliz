@@ -14,7 +14,9 @@ class Borrow {
     required this.state,
     this.returnDate,
   });
-
+ /*
+    Fonction permettant de récupérer un emprunt à partir d'une map
+  */
   factory Borrow.fromMap(Map<String, dynamic> map) {
     if (map['returnDate'] == null) {
       return Borrow(
@@ -36,6 +38,9 @@ class Borrow {
     }
   }
 
+  /*
+    Fonction permettant de créer une Map à partir d'un objet Borrow
+  */
   Map<String, dynamic> toMap() {
     if (returnDate == null) {
       return {

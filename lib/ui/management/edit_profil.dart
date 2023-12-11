@@ -25,7 +25,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _oldPasswordController.dispose();
     super.dispose();
   }
-
+  /*
+    Fonction permettant d'afficher une alerte selon les paramètres donnés
+  */
   void showAlert(bool success, String type, String? username) {
     String content;
     if (success) {

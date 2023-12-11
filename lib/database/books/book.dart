@@ -27,6 +27,9 @@ class Book {
     this.imageUrl,
   });
 
+ /*
+    Fonction permettant de récupérer un livre à partir d'une map
+  */
   factory Book.fromMap(Map<String, dynamic> map) {
     return Book(
       title: map['title'] ?? '',
@@ -44,6 +47,9 @@ class Book {
     );
   }
 
+  /*
+    Fonction permettant de créer une Map à partir d'un objet Book
+  */
   Map<String, dynamic> toMap() {
     return {
       'title': title,

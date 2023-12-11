@@ -118,6 +118,9 @@ class BookDetailModal extends StatelessWidget {
     );
   }
 
+  /*
+    Fonction permettant la création d'une ligne pour chaque attributs d'un livre 
+  */
   Widget _bookDetailRow(String label, String value, BuildContext context) {
     return Card(
       color: Theme.of(context).colorScheme.secondary,

@@ -1,5 +1,8 @@
 import 'package:bibliz/database/books/book.dart';
 
+/*
+  Singleton permettant de garder notre liste de livre partout dans Bibliz
+*/
 class BookManager {
   static final BookManager _instance = BookManager._internal();
 
@@ -12,6 +15,9 @@ class BookManager {
   List<Book> books = [];
   bool isBooksLoaded = false;
 
+  /*
+    Fonction permettant de mettre à jour le status dans la liste de livre
+  */
   void updateStatusBookList(Book book, bool available) {
     int index = books.indexOf(book);
 

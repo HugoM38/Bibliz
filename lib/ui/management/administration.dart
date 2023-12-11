@@ -28,6 +28,9 @@ class _AdministrationPageState extends State<AdministrationPage> {
     _loadUsers();
   }
 
+  /*
+    Fonction permettant de mettre a jour la liste des utilisateurs a chaque modification dans la barre de recherche.
+  */
   void _filterUsers(String searchText) {
     setState(() {
       filteredUsers = users.where((user) {
@@ -81,6 +84,10 @@ class _AdministrationPageState extends State<AdministrationPage> {
                 ))));
   }
 
+  /*
+    Fonction permettant de charger la liste des utilisateurs et de 
+    la mettre à jour avec les données de la base de données.
+  */
   Future<void> _loadUsers() async {
     if (!isUsersLoaded) {
       try {
@@ -103,6 +110,9 @@ class _AdministrationPageState extends State<AdministrationPage> {
     }
   }
 
+  /*
+    Fonction permettant de générer une ligne avec les détails pour chaque utilisateurs
+  */
   Widget buildRowTemplate(User user, Key key) {
     List<String> roleList = [];
 
