@@ -24,7 +24,7 @@ class ManagementProxy implements ManagementService {
     switch (SharedPrefs().getCurrentUserRole()) {
       case UserRole.member:
         widget = managementService.getManagementButton(
-            context, loadBooks, count, "/edit_profil", "Modifier mon profil");
+            context, loadBooks, count, "/edit_profile", "Modifier mon profil");
         break;
       case UserRole.librarian:
         widget = managementService.getManagementButton(
@@ -36,7 +36,7 @@ class ManagementProxy implements ManagementService {
         break;
       default:
         widget = managementService.getManagementButton(
-            context, loadBooks, count, "/edit_profil", "Modifier mon profil");
+            context, loadBooks, count, "/edit_profile", "Modifier mon profil");
         break;
     }
 
